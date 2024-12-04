@@ -1,0 +1,214 @@
+<script setup>
+  function search() {
+            var query = document.getElementById('searchInput').value;
+            var searchEngine = document.getElementById('searchEngine').value;
+            if (query) {
+                window.open(searchEngine + encodeURIComponent(query), '_blank');
+            }
+        }
+</script>
+
+<template>
+  <div class="title-container">
+        <h1>搜星鸦</h1>
+    </div>
+
+    <div class="container">
+        <div class="search-bar">
+            <select id="searchEngine">
+                <option value="https://www.baidu.com/s?wd=">百度</option>
+                <option value="https://www.google.com/search?q=">谷歌</option>
+                <option value="https://www.bing.com/search?q=">必应</option>
+                <option value="https://duckduckgo.com/?q=">鸭鸭Go</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="搜索...">
+            <button type="submit" onclick="search()">搜索</button>
+        </div>
+    </div>
+
+    <div class="container favorites">
+        <div class="favorite-item">
+            <a href="https://www.baidu.com" target="_blank">
+                <img src="https://www.baidu.com/favicon.ico" alt="百度">
+            </a>
+            <a href="https://www.baidu.com" target="_blank"><span>百度</span></a>
+        </div>
+        <div class="favorite-item">
+            <a href="https://nodejs.org/" target="_blank">
+                <img src="https://nodejs.org/favicon.ico" alt="NodeJS">
+            </a>
+            <a href="https://nodejs.org/" target="_blank">
+                <span>NodeJS</span>
+            </a>
+        </div>
+        <div class="favorite-item">
+            <a href="https://www.github.com" target="_blank">
+                <img src="https://github.com/favicon.ico" alt="GitHub">
+            </a>
+            <a href="https://www.github.com" target="_blank">
+                <span>GitHub</span>
+            </a>
+        </div>
+        <!-- 可以继续添加更多收藏项 -->
+    </div>
+</template>
+
+<style scoped>
+/* 重置默认样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+
+        body {
+            padding: 20px;
+        }
+
+        /* 常用元素样式 */
+        h1, h2, h3, h4, h5, h6 {
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* 容器样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* 标题样式 */
+        .title-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .title-container h1 {
+            animation: fadeInDown 1s ease-in-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 搜索框和按钮样式 */
+        .container .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        
+        .container input[type="text"] {
+            /*width: calc(100% - 260px);*/
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        .container input[type="text"]:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        .container input{
+            width: 700px;  
+        }
+
+        .container select {
+            width: 70px;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        .container select:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        .container button {
+            min-width: 100px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .container button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 收藏区域样式 */
+        .favorites {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center; /* 居中对齐收藏项 */
+        }
+
+        .favorite-item {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .favorite-item img {
+            width: 64px;
+            height: 64px;
+            border-radius: 8px;
+            margin-bottom: 5px; /* 在图标和文字之间增加间距 */
+        }
+
+        .favorite-item a {
+            display: block;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #333; /* 设置文字颜色 */
+        }
+
+        .favorite-item a:hover {
+            color: #007BFF; /* 鼠标悬停时的文字颜色 */
+        }
+</style>
