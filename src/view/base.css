@@ -1,0 +1,59 @@
+/* 全局样式 */
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    margin: 0;
+    padding: 0;
+    background-color: #242424;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-width: 320px;
+    min-height: 100vh;
+}
+
+/* 滚动条 */
+*::-webkit-scrollbar {
+    height: 7px;
+    width: 7px;
+    background: transparent;
+}
+
+*::-webkit-scrollbar:hover {
+    background: rgba(128, 128, 128, 0.1);
+}
+
+*::-webkit-scrollbar-thumb {
+    background: rgb(0, 0, 0, 0.07);
+    -webkit-border-radius: 6px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+*::-webkit-scrollbar-corner {
+    background: rgb(0, 0, 0, 0);
+}
+
+/*组件默认样式*/
+.ya-mod {
+    width: 77px;
+    height: 77px;
+    position: fixed;
+    border-radius: 7px;
+}
+
+.ya-mod:hover {
+    background-color: rgb(255, 255, 255, 0.2);
+    cursor: grab;
+}
