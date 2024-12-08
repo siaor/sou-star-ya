@@ -51,6 +51,7 @@ body {
     height: 77px;
     position: fixed;
     border-radius: 7px;
+    z-index: 0;
 }
 
 .ya-mod:hover {

@@ -8,19 +8,32 @@
 <script setup lang="ts">
 import {ref, onMounted} from "vue";
 
-
 /** 背景*/
+/*【随机星星】*/
 //星星个数
 const starts = 333;
 //星空
 const starsRef = ref<HTMLDivElement | null>(null);
+//渲染星星
+function loadStar(){
+  if (starsRef.value) {
+    let shadow = "";
+    for (let i = 0; i < starts; i++) {
+      let x = Math.floor(Math.random() * window.innerWidth);
+      let y = Math.floor(Math.random() * window.innerHeight);
+      //x 偏移量 | y 偏移量 | 阴影模糊半径 | 阴影扩散半径 | 阴影颜色
+      shadow = `${x}px ${y}px 0.4px 0.4px rgba(255, 255, 255, 1), ${shadow}`;
+    }
+    shadow = shadow.substring(0, shadow.length - 2);
+    starsRef.value.style.boxShadow = shadow;
+  }
+}
 
+/*【随机流星】*/
 //流星个数
 const meteors = 7;
 //流星元素数组
 const meteorRef = ref<HTMLDivElement[]>([]);
-
-//随机流星划过
 const start = () => {
   meteorRef.value.forEach((item: HTMLDivElement) => {
     let v = Math.floor(Math.random() * 90);
@@ -35,19 +48,14 @@ const start = () => {
 //页面加载完毕
 onMounted(() => {
   //渲染星星
-  if (starsRef.value) {
-    let shadow = "";
-    for (let i = 0; i < starts; i++) {
-      let x = Math.floor(Math.random() * window.innerWidth);
-      let y = Math.floor(Math.random() * window.innerHeight);
-      //x 偏移量 | y 偏移量 | 阴影模糊半径 | 阴影扩散半径 | 阴影颜色
-      shadow = `${x}px ${y}px 0.4px 0.4px rgba(255, 255, 255, 1), ${shadow}`;
-    }
-    shadow = shadow.substring(0, shadow.length - 2);
-    starsRef.value.style.boxShadow = shadow;
-  }
+  loadStar();
   //渲染流星
   setInterval(start, 1500);
+
+  //窗口变化重新渲染星星
+  window.addEventListener('resize', function (){
+    loadStar();
+  });
 });
 </script>
 
