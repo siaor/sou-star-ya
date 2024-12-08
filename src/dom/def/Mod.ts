@@ -1,5 +1,6 @@
 import {DefineComponent} from "vue";
 import AppMod from '@/view/mod/AppMod.vue'
+import GroupMod from "@/view/mod/GroupMod.vue";
 import SearchMod from '@/view/mod/SearchMod.vue'
 
 export class Mod {
@@ -10,5 +11,6 @@ export class Mod {
 
 export const AllMod = {
     AppMod,
+    GroupMod,
     SearchMod
 }

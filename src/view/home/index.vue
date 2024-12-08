@@ -23,6 +23,98 @@ const modConfList: ModConf[] = [
     "conf": {"x": 0, "y": 0, "engine": "百度"}
   },
   {
+    "mod": "GroupMod",
+    "conf": {
+      "x": 128,
+      "y": 28,
+      "name": "AI工具",
+      "logo": "/img/ai_logo.svg",
+      "list": [
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "通义千问",
+            "url": "https://tongyi.aliyun.com",
+            "logo": "https://img.alicdn.com/imgextra/i1/O1CN01asLYeX1WhbsyEZn5u_!!6000000002820-55-tps-56-56.svg"
+          }
+        },
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "可灵AI",
+            "url": "https://kling.kuaishou.com",
+            "logo": "https://s2-111386.kwimgs.com/bs2/mmu-aiplatform-temp/kling/images/kling-icon.png"
+          }
+        },
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "智谱清言",
+            "url": "https://chatglm.cn",
+            "logo": "https://chatglm.cn/favicon.ico"
+          }
+        },
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "文心一言",
+            "url": "https://yiyan.baidu.com",
+            "logo": "https://ebui-cdn.cdn.bcebos.com/yiyan-logo.png"
+          }
+        },
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "及梦AI",
+            "url": "https://jimeng.jianying.com",
+            "logo": "https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico"
+          }
+        },
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "海螺AI",
+            "url": "https://hailuoai.com/",
+            "logo": "https://hailuoai.com/favicon.ico"
+          }
+        },
+      ]
+    }
+  },
+  {
+    "mod": "GroupMod",
+    "conf": {
+      "x": 28,
+      "y": 28,
+      "name": "我的收藏",
+      "logo": "/img/app_group.svg",
+      "list":[
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "青书",
+            "url": "https://qingbook.siaor.com",
+            "logo": "https://siaor.neocities.org/qingbook/favicon.svg"
+          }
+        },
+      ]
+    }
+  },
+  {
     "mod": "AppMod",
     "conf": {
       "x": 600,

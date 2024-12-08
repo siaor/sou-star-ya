@@ -21,6 +21,7 @@ const props = defineProps<{
 /*双击打开*/
 let clickTimeout = 0;
 const openApp = (event: MouseEvent) => {
+  event.preventDefault();
   if (clickTimeout === 1) {
     //触发双击
     window.open(props.conf.url, '_blank');
@@ -57,6 +58,7 @@ const openApp = (event: MouseEvent) => {
 
 .ya-mod-app-logo img {
   height: 77%;
+  width: 77%;
 }
 
 .ya-mod-app-name {

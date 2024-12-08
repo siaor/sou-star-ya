@@ -7,8 +7,11 @@
 export function addMoveEvDelay(elId: string, x: number, y: number) {
     setTimeout(function () {
         addMoveEv(elId, x, y);
-    }, 1000);
+    }, 700);
 }
+
+//需要禁用默认事件的组件
+const needPreventMod = ['AppMod','GroupMod'];
 
 function addMoveEv(elId: string, x: number, y: number) {
     const el = document.getElementById(elId) as HTMLInputElement;
@@ -64,7 +67,6 @@ function addMoveEv(elId: string, x: number, y: number) {
     //处理触摸结束
     function handleTouchEnd(event: TouchEvent) {
         event.stopPropagation();
-        event.preventDefault();
 
         isDragging = false;
         el.style.cursor = 'grab';
@@ -90,14 +92,13 @@ function addMoveEv(elId: string, x: number, y: number) {
     //处理触摸中断
     function handleTouchLeave(event: TouchEvent) {
         event.stopPropagation();
-        event.preventDefault();
         isDragging = false;
     }
 
     //[鼠标点击]
     el.addEventListener('mousedown', function (event) {
         event.stopPropagation();
-        if(el.getAttribute('mod') === 'AppMod') event.preventDefault();
+        if(needPreventMod.includes(el.getAttribute('mod') as string)) event.preventDefault();
 
         startX = event.clientX - startX;
         startY = event.clientY - startY;
@@ -114,7 +115,7 @@ function addMoveEv(elId: string, x: number, y: number) {
     //[触摸开始]
     el.addEventListener('touchstart', function handleTouchStart(event: TouchEvent) {
         event.stopPropagation();
-        if(el.getAttribute('mod') === 'AppMod') event.preventDefault();
+        if(needPreventMod.includes(el.getAttribute('mod') as string)) event.preventDefault();
 
         const touch = event.touches[0];
         startX = touch.clientX - startX;
