@@ -118,5 +118,152 @@ pnpm build
 无需服务器，免费部署方案：[【AI助力打造永恒网站】](https://www.douyin.com/user/self?from_tab_name=main&modal_id=7440414043036257574&showTab=like)
 将dist目录下的文件上传即可
 
-# 6 留言板  
+# 6 模组配置
+打包完成后，模组配置位于~/dist/conf-ya目录中
+默认配置：ya.json
+
+## 6.1 搜索模组
+
+* 模组名称
+```
+"mod": "SearchMod"
+```
+
+
+* 模组配置
+```
+"conf": {"x": 0, "y": 0, "engine": "百度"}
+```
+
+
+
+| 属性 |  含义  | 类型  | 默认值 |  说明 |
+|:--:|:----:|:---:|:---:|:--:|
+| x  | 横坐标  | 数字  |  0  | 单位px |
+| y  | 纵坐标  | 数字  |  0  | 单位px |
+| engine | 搜索引擎 | 字符串 | 百度  |    |
+注：坐标原点为页面左上角，全0为使用默认
+
+
+* 示例
+```
+[
+  {
+    "mod": "SearchMod",
+    "conf": {"x": 0, "y": 0, "engine": "百度"}
+  }
+]
+```
+
+## 6.2 应用模组
+* 模组名称
+```
+"mod": "AppMod"
+```
+
+* 模组配置
+```
+"conf": {
+      "x": 0,
+      "y": 0,
+      "name": "搜星鸦",
+      "url": "https://ya.siaor.com",
+      "logo": "https://siaor.neocities.org/favicon.ico"
+    }
+```
+
+
+|  属性  |  含义  | 类型  | 默认值 |  说明 |
+|:----:|:----:|:---:|:---:|:--:|
+|  x   | 横坐标  | 数字  |  0  | 单位px |
+|  y   | 纵坐标  | 数字  |  0  | 单位px |
+| name | 应用名称 | 字符串 |   |    |
+| url  | 跳转链接 | 字符串 |   |    |
+| logo | 应用图标 | 字符串 |   |    |
+注：坐标原点为页面左上角，全0为使用默认
+
+
+* 示例
+```
+[
+  {
+    "mod": "AppMod",
+    "conf": {
+      "x": 0,
+      "y": 0,
+      "name": "搜星鸦",
+      "url": "https://ya.siaor.com",
+      "logo": "https://siaor.neocities.org/favicon.ico"
+    }
+  }
+]
+```
+
+## 6.3 应用分组模组
+* 模组名称
+```
+"mod": "GroupMod"
+```
+
+* 模组配置
+```
+"conf": {
+      "x": 28,
+      "y": 28,
+      "name": "我的收藏",
+      "logo": "/img/app_group.svg",
+      "list":[
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "青书",
+            "url": "https://qingbook.siaor.com",
+            "logo": "https://siaor.neocities.org/qingbook/favicon.svg"
+          }
+        }
+      ]
+    }
+```
+
+
+|  属性  |   含义   | 类型  | 默认值 |  说明 |
+|:----:|:------:|:---:|:---:|:--:|
+|  x   |  横坐标   | 数字  |  0  | 单位px |
+|  y   |  纵坐标   | 数字  |  0  | 单位px |
+| name |  分组名称  | 字符串 |   |    |
+| logo |  应用图标  | 字符串 |   |    |
+| list | 应用模组数组 | 数组  |   |    |
+注：坐标原点为页面左上角，全0为使用默认
+
+
+* 示例
+```
+[
+  {
+    "mod": "GroupMod",
+    "conf": {
+      "x": 28,
+      "y": 28,
+      "name": "我的收藏",
+      "logo": "/img/app_group.svg",
+      "list":[
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "青书",
+            "url": "https://qingbook.siaor.com",
+            "logo": "https://siaor.neocities.org/qingbook/favicon.svg"
+          }
+        }
+      ]
+    }
+  }
+]
+```
+
+# 7 留言板  
 欢迎众弟子提出建议，一起交流学习。
