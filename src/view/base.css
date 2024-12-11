@@ -29,11 +29,11 @@ body {
 }
 
 *::-webkit-scrollbar:hover {
-    background: rgba(128, 128, 128, 0.1);
+    background: rgba(128, 128, 128, 0.7);
 }
 
 *::-webkit-scrollbar-thumb {
-    background: rgb(0, 0, 0, 0.07);
+    background: rgb(0, 0, 0, 0.2);
     -webkit-border-radius: 6px;
 }
 

@@ -1,8 +1,12 @@
 /**
- * 给元素添加移动事件
- * @elId:元素ID
- * @x:元素横坐标
- * @y:元素纵坐标
+ * 元素移动工具类
+ *
+ * @param elId 元素ID
+ * @param x 元素横坐标
+ * @param y 元素纵坐标
+ * @description 给元素添加移动事件
+ * @author Siaor
+ * @date 2024-12-06 12:00:00
  * */
 export function addMoveEvDelay(elId: string, x: number, y: number) {
     setTimeout(function () {

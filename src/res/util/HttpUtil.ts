@@ -17,6 +17,7 @@ import {ActCode} from "@/dom/def/base/ActCode";
  *     .catch(error => console.error(error));
  *
  * @author Siaor
+ * @date 2024-12-06 12:00:00
  * */
 export class HttpUtil {
 

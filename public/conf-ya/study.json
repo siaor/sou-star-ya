@@ -1,0 +1,92 @@
+[
+  {
+    "mod": "SearchMod",
+    "conf": {"x": 0, "y": 0, "engine": "百度"}
+  },
+  {
+    "mod": "ThemeMod",
+    "conf": {
+      "x": 0,
+      "y": 0,
+      "name": "主题",
+      "logo": "/img/theme.svg",
+      "list": [
+        {
+          "name": "主题Ya",
+          "logo": "/img/star.svg",
+          "url": "/conf-ya/ya.json"
+        },
+        {
+          "name": "游戏",
+          "url": "/conf-ya/game.json",
+          "logo": "/img/game.svg"
+        },
+        {
+          "name": "学习",
+          "url": "/conf-ya/study.json",
+          "logo": "/img/study.svg"
+        }
+      ]
+    }
+  },
+  {
+    "mod": "AppMod",
+    "conf": {
+      "x": 28,
+      "y": 28,
+      "name": "青书",
+      "url": "https://qingbook.siaor.com",
+      "logo": "https://siaor.neocities.org/qingbook/favicon.svg"
+    }
+  },
+  {
+    "mod": "AppMod",
+    "conf": {
+      "x": 128,
+      "y": 28,
+      "name": "NodeJS",
+      "url": "https://nodejs.org",
+      "logo": "https://nodejs.org/favicon.ico"
+    }
+  },
+  {
+    "mod": "AppMod",
+    "conf": {
+      "x": 228,
+      "y": 28,
+      "name": "VSCode",
+      "url": "https://code.visualstudio.com",
+      "logo": "https://code.visualstudio.com/favicon.ico"
+    }
+  },
+  {
+    "mod": "AppMod",
+    "conf": {
+      "x": 28,
+      "y": 128,
+      "name": "Neocities",
+      "url": "https://neocities.org",
+      "logo": "https://neocities.org/favicon.ico"
+    }
+  },
+  {
+    "mod": "AppMod",
+    "conf": {
+      "x": 128,
+      "y": 128,
+      "name": "Git",
+      "url": "https://git-scm.com",
+      "logo": "https://git-scm.com/favicon.ico"
+    }
+  },
+  {
+    "mod": "AppMod",
+    "conf": {
+      "x": 228,
+      "y": 128,
+      "name": "OpenJDK",
+      "url": "https://openjdk.org",
+      "logo": "https://openjdk.org/images/nanoduke.ico"
+    }
+  }
+]

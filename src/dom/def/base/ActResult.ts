@@ -4,6 +4,7 @@ import {ActCode} from "@/dom/def/base/ActCode";
  * 统一操作响应
  *
  * @author Siaor
+ * @date 2024-12-09 12:00:00
  * */
 export class ActResult {
     public code: number;
@@ -19,10 +20,12 @@ export class ActResult {
     }
 
     static ok(data?: any): ActResult {
-        return new ActResult(ActCode.SUCCESS.code, true, ActCode.SUCCESS.msg, data ?? {})
+        return new ActResult(ActCode.SUCCESS.code, true, ActCode.SUCCESS.msg, data ?? {});
     }
 
     static fail(actCode?: { code: number, msg: string }, msg?: string): ActResult {
-        return new ActResult(ActCode.FAILURE.code, false, msg ?? ActCode.FAILURE.msg, {})
+        if (!actCode) actCode = ActCode.FAILURE;
+        return new ActResult(actCode.code, false, msg ?? actCode.msg, {});
     }
+
 }

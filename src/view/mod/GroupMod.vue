@@ -8,22 +8,23 @@
     </div>
   </div>
   <transition name="shrink">
-  <div class="ya-mod-group-content" v-show="isShow">
-    <template v-for="(mod, index) in modList" :key="index">
-      <component :id="mod.id" :is="mod.type" v-bind="mod.props"/>
-    </template>
-    <div class="ya-mod-group-close">
-      <img src="/img/app_close.svg" alt="close" @click="doClose" @touchstart="doClose" />
+    <div class="ya-mod-group-content" v-show="isShow">
+      <template v-for="(mod, index) in modList" :key="index">
+        <component :id="mod.id" :is="mod.type" v-bind="mod.props"/>
+      </template>
+      <div class="ya-mod-group-close">
+        <img src="/img/app_close.svg" alt="close" @click="doClose" @touchstart="doClose"/>
+      </div>
     </div>
-  </div>
   </transition>
 </template>
 
 <script setup lang="ts">
 import {DefineComponent, defineProps, reactive, ref} from 'vue';
 import {GroupModConf} from "@/dom/def/mod/GroupModConf";
-import {AllMod, Mod} from "@/dom/def/Mod";
+import {Mod} from "@/dom/def/Mod";
 import {ModConf} from "@/dom/def/ModConf";
+import {AllMod} from "@/dom/def/ModSky";
 
 //从父组件接收的 props
 const props = defineProps<{
@@ -49,17 +50,17 @@ function loadMod(modConf: ModConf) {
 
 /*双击打开*/
 let clickTimeout = 0;
-const doOpen = (event:Event) => {
+const doOpen = (event: Event) => {
   event.preventDefault();
   if (clickTimeout === 1) {
     //触发双击
     let parent = props.id + '-';
     let modId = 1;
-    const maxCount = Math.floor(window.innerWidth / 100)+1;
+    const maxCount = Math.floor(window.innerWidth / 100) + 1;
     for (let modConf of props.conf.list) {
       modConf.id = parent + modId;
-      modConf.conf.x = ((modId%maxCount-1) * 100)+28;
-      modConf.conf.y = (Math.floor(modId/maxCount) * 100)+28;
+      modConf.conf.x = ((modId % maxCount - 1) * 100) + 28;
+      modConf.conf.y = (Math.floor(modId / maxCount) * 100) + 28;
       loadMod(modConf);
       modId++;
     }
@@ -123,7 +124,7 @@ function doClose() {
   overflow-wrap: break-word;
 }
 
-.ya-mod-group-content{
+.ya-mod-group-content {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -133,7 +134,8 @@ function doClose() {
   z-index: 99;
   /*transition: height 0.5s ease, opacity 0.5s ease;*/
 }
-.ya-mod-group-close{
+
+.ya-mod-group-close {
   width: 100%;
   height: 70px;
 
@@ -144,14 +146,17 @@ function doClose() {
   justify-content: center;
   align-items: center;
 }
-.ya-mod-group-close img{
+
+.ya-mod-group-close img {
   height: 70%;
 }
-.ya-mod-group-close img:hover{
+
+.ya-mod-group-close img:hover {
   cursor: pointer;
   background-color: rgb(255, 255, 255, 0.1);
   border-radius: 50%;
 }
+
 /* >>>>>>>【响应式样式】<<<<<<< */
 /* 小屏幕：手机 */
 @media (max-width: 768px) {
