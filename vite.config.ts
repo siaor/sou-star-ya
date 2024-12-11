@@ -8,6 +8,9 @@ export default defineConfig({
         host: "0.0.0.0",
         port: 372
     },
+    build: {
+        target: "esnext",
+    },
     resolve: {
         alias: {
             '@': resolve(__dirname, './src')
