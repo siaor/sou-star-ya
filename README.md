@@ -5,6 +5,9 @@
 </h1>
 <h4 align="center">
     🌏人 人 都 在 用 的 浏 览 器 首 页🏠
+</h4>
+
+<h3 align="center">
 
     🐦智慧之鸦
 
@@ -13,8 +16,7 @@
     🏘️安得广厦千万间，大庇天下寒士俱欢颜！
 
     ❤️点赞鸦！⭐收藏鸦！💬评论鸦！🌟给个小星星鸦！
-
-</h4> 
+</h3>
 
 
 <div align="center">
@@ -142,6 +144,7 @@ pnpm build
 | x  | 横坐标  | 数字  |  0  | 单位px |
 | y  | 纵坐标  | 数字  |  0  | 单位px |
 | engine | 搜索引擎 | 字符串 | 百度  |    |
+
 注：坐标原点为页面左上角，全0为使用默认
 
 
@@ -180,6 +183,7 @@ pnpm build
 | name | 应用名称 | 字符串 |   |    |
 | url  | 跳转链接 | 字符串 |   |    |
 | logo | 应用图标 | 字符串 |   |    |
+
 注：坐标原点为页面左上角，全0为使用默认
 
 
@@ -235,6 +239,7 @@ pnpm build
 | name |  分组名称  | 字符串 |   |    |
 | logo |  应用图标  | 字符串 |   |    |
 | list | 应用模组数组 | 数组  |   |    |
+
 注：坐标原点为页面左上角，全0为使用默认
 
 
@@ -258,6 +263,57 @@ pnpm build
             "url": "https://qingbook.siaor.com",
             "logo": "https://siaor.neocities.org/qingbook/favicon.svg"
           }
+        }
+      ]
+    }
+  }
+]
+```
+
+## 6.4 主题模组
+* 模组名称
+```
+ThemeMod
+```
+
+* 模组配置
+
+|  属性  |  含义  | 类型  | 默认值 |  说明 |
+|:----:|:----:|:---:|:---:|:--:|
+|  x   | 横坐标  | 数字  |  0  | 单位px |
+|  y   | 纵坐标  | 数字  |  0  | 单位px |
+| name | 分组名称 | 字符串 |   |    |
+| logo | 应用图标 | 字符串 |   |    |
+| list | 主题数组 | 数组  |   |    |
+
+注：坐标原点为页面左上角，全0为使用默认
+
+
+* 示例
+```
+[
+  {
+    "mod": "ThemeMod",
+    "conf": {
+      "x": 0,
+      "y": 0,
+      "name": "主题",
+      "logo": "/img/theme.svg",
+      "list": [
+        {
+          "name": "主题Ya",
+          "logo": "/img/star.svg",
+          "url": "/conf-ya/ya.json"
+        },
+        {
+          "name": "游戏",
+          "url": "/conf-ya/game.json",
+          "logo": "/img/game.svg"
+        },
+        {
+          "name": "学习",
+          "url": "/conf-ya/study.json",
+          "logo": "/img/study.svg"
         }
       ]
     }

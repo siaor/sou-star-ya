@@ -8,6 +8,7 @@
 export class AppModConf{
     x:number;
     y:number;
+    isDrag:boolean = true;
     name:string;
     url:string;
     logo:string;

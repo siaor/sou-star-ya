@@ -10,6 +10,7 @@ import {AppModConf} from "@/dom/def/mod/AppModConf";
 export class ThemeModConf {
     x: number;
     y: number;
+    isDrag:boolean=false;
     name: string;
     logo: string;
     list: AppModConf[];

@@ -53,7 +53,8 @@ if (confYa) {
 /*双击打开*/
 let clickTimeout = 0;
 const openApp = (event: MouseEvent) => {
-  event.preventDefault();
+  //event.stopPropagation();
+  //event.preventDefault();
   if (clickTimeout === 1) {
     //触发双击
     isShow.value = !isShow.value;
@@ -68,7 +69,8 @@ const openApp = (event: MouseEvent) => {
 };
 
 function doSwitch(actConf:AppModConf,event: MouseEvent) {
-  event.stopPropagation();
+  //event.stopPropagation();
+  //event.preventDefault();
   logoRef.value = actConf.logo
   nameRef.value = actConf.name
   const sysEv: SysEvent = new SysEvent(Sys.SYS_EVENT_RELOAD_MOD, {url: actConf.url});

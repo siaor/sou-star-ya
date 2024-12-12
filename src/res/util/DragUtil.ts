@@ -1,3 +1,5 @@
+import {ModConfCtr} from "@/ctr/ModConfCtr";
+
 /**
  * 元素移动工具类
  *
@@ -67,6 +69,7 @@ function addMoveEv(elId: string, x: number, y: number) {
         startY = event.clientY - startY;
         el.removeEventListener('mousemove', handleMouseMove);
         el.removeEventListener('mouseup', handleMouseUp);
+        ModConfCtr.updatePosition(elId,startX,startY);
     }
     //处理触摸结束
     function handleTouchEnd(event: TouchEvent) {

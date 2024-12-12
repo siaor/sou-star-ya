@@ -9,6 +9,7 @@
 export class SearchModConf{
     x:number;
     y:number;
+    isDrag:boolean = true;
     engine:string;
 
     constructor() {

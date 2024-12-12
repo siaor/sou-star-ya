@@ -10,6 +10,7 @@ import {ModConf} from "@/dom/def/ModConf";
 export class GroupModConf{
     x:number;
     y:number;
+    isDrag:boolean = true;
     name:string;
     logo:string;
     list: ModConf[];

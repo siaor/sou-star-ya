@@ -16,3 +16,32 @@ export const AllMod = {
     SearchMod,
     ThemeMod
 }
+
+export const SysMod = {
+    ThemeMod: {
+        "mod": "ThemeMod",
+        "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "主题",
+            "logo": "/img/theme.svg",
+            "list": [
+                {
+                    "name": "主题Ya",
+                    "logo": "/img/star.svg",
+                    "url": "/conf-ya/ya.json"
+                },
+                {
+                    "name": "游戏",
+                    "url": "/conf-ya/game.json",
+                    "logo": "/img/game.svg"
+                },
+                {
+                    "name": "学习",
+                    "url": "/conf-ya/study.json",
+                    "logo": "/img/study.svg"
+                }
+            ]
+        }
+    }
+}
