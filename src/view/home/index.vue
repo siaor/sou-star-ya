@@ -1,8 +1,6 @@
 <template>
   <div class="ya-desktop">
-    <template v-for="(mod, index) in modList" :key="index">
-      <component :id="mod.id" :is="mod.type" v-bind="mod.props" @sysEv="sysEv"/>
-    </template>
+    <component v-for="(mod, index) in modListRef" :key="index" :is="mod.def" :id="mod.id" v-bind="mod" @sysEv="sysEv"/>
   </div>
 
   <StarBg></StarBg>
@@ -10,67 +8,50 @@
 
 <script setup lang="ts">
 import './index.css'
-import {DefineComponent, onMounted, reactive} from "vue";
+import {DefineComponent, onMounted, shallowRef} from "vue";
 import StarBg from '@/view/bg/StarBg.vue'
 import {Mod} from "@/dom/def/Mod";
-import {ModConf} from "@/dom/def/ModConf";
-import {AllMod, SysMod} from "@/dom/def/ModSky";
-import {addMoveEvDelay} from "@/res/util/DragUtil";
-import {ModConfCtr} from "@/ctr/ModConfCtr";
+import {ModCtr} from "@/ctr/ModCtr";
 import {ActCode} from "@/dom/def/base/ActCode";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";
-import {ActResult} from "@/dom/def/base/ActResult";
-
-//模组配置列表
-const modConfList: ModConf[] = [];
+import {AllModDef} from "@/dom/def/ModSky";
+import {addMoveEv} from "@/res/util/DragUtil";
 
 //模组列表
-const modList = reactive<Mod[]>([]);
+let modList: Mod[];
+const modListRef = shallowRef<Mod[]>([]);
 
-//添加模组到页面
-function addMod(modConf: ModConf) {
-  const componentType = AllMod[modConf.mod as keyof typeof AllMod] as DefineComponent<{}, {}, any>;
-  if (componentType) {
-    // 这里可以根据需要设置组件的属性
-    const props: Record<string, any> = modConf;
-    modList.push({id: modConf.id, type: componentType, props});
-  } else {
-    console.error(`Component with name "${modConf.mod}" not found.`);
-  }
-}
-
-//重新加载模组
-async function reLoadMod(url: string) {
-  const modConfAR = await ModConfCtr.load(url);
-  if (modConfAR.success) {
-    modList.length = 0;
-    modConfList.length = 0;
-    modConfList.push(...modConfAR.data);
-
-    //附加系统默认模块
-    if (!modConfList.some(item => item.mod === 'ThemeMod')) {
-      modConfList.push(SysMod.ThemeMod);
-      await ModConfCtr.add(url,SysMod.ThemeMod);
-    }
-
-    //渲染模组
-    let modId:string;
-    let mcAR:ActResult;
-    let mc:ModConf;
-    for (let modConf of modConfList) {
-      modId = modConf.id ?? '';
-      mcAR = await ModConfCtr.get(modId);
-      if(!mcAR.success) continue;
-
-      mc = mcAR.data;
-      addMod(mc);
-      addMoveEvDelay(modId, mc.conf.x, mc.conf.y);
-    }
-
-  } else {
+/**
+ * 加载模式
+ *
+ * @description 根据模式文件url加载模式
+ * @author Siaor
+ * @date 2024-12-12 03:41:49
+ * */
+async function loadMode(url: string) {
+  const modAR = await ModCtr.load(url);
+  if (!modAR.success) {
     alert(ActCode.MOD_CONF_NOT_FOUND.msg);
+    return;
   }
+
+  //清空历史模组
+  modList = [];
+  modList.push(...modAR.data);
+
+  //模组定义
+  for (let mod of modList) {
+    const modDef = AllModDef[mod.mod as keyof typeof AllModDef] as DefineComponent<{}, {}, any>;
+    if (!modDef) continue;
+    mod.def = modDef;
+  }
+
+  //渲染模组
+  modListRef.value = [];
+  setTimeout(function () {
+    modListRef.value = modList;
+  }, 100);
 }
 
 /**
@@ -81,9 +62,15 @@ async function reLoadMod(url: string) {
  * */
 function sysEv(e: SysEvent) {
   switch (e.name) {
-    case Sys.SYS_EVENT_RELOAD_MOD:
-      reLoadMod(e.data.url);
+    case Sys.SYS_EVENT_LOAD_MODE:
+      loadMode(e.data.url);
       break;
+    case Sys.SYS_EVENT_CACHE_MOD:
+      ModCtr.cache(e.data);
+      break
+    case Sys.SYS_EVENT_ADD_DRAG:
+      addMoveEv(e.data.id, e.data.x, e.data.y);
+      break
     default:
       break;
   }
@@ -91,11 +78,7 @@ function sysEv(e: SysEvent) {
 
 //页面加载完成后
 onMounted(() => {
-  let confYa = localStorage.getItem(Sys.SYS_MOD_CONF_PATH);
-  if (!confYa) {
-    confYa = '/conf-ya/ya.json';
-  }
-  reLoadMod(confYa);
+  loadMode(localStorage.getItem(Sys.SYS_MOD_CONF_PATH) ?? '/mode/ya.json');
 });
 </script>
 

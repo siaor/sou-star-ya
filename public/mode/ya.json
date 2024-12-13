@@ -4,27 +4,25 @@
     "conf": {"x": 0, "y": 0, "engine": "百度"}
   },
   {
-    "mod": "ThemeMod",
+    "mod": "ModeMod",
     "conf": {
-      "x": 0,
-      "y": 0,
       "name": "主题",
       "logo": "/img/theme.svg",
       "list": [
         {
           "name": "主题Ya",
           "logo": "/img/star.svg",
-          "url": "/conf-ya/ya.json"
+          "url": "/mode/ya.json"
         },
         {
           "name": "游戏",
-          "url": "/conf-ya/game.json",
-          "logo": "/img/game.svg"
+          "logo": "/img/game.svg",
+          "url": "/mode/game.json"
         },
         {
           "name": "学习",
-          "url": "/conf-ya/study.json",
-          "logo": "/img/study.svg"
+          "logo": "/img/study.svg",
+          "url": "/mode/study.json"
         }
       ]
     }

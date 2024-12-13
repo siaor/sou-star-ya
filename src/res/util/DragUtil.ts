@@ -1,4 +1,4 @@
-import {ModConfCtr} from "@/ctr/ModConfCtr";
+import {ModCtr} from "@/ctr/ModCtr";
 
 /**
  * 元素移动工具类
@@ -19,7 +19,7 @@ export function addMoveEvDelay(elId: string, x: number, y: number) {
 //需要禁用默认事件的组件
 const needPreventMod = ['AppMod','GroupMod'];
 
-function addMoveEv(elId: string, x: number, y: number) {
+export function addMoveEv(elId: string, x: number, y: number) {
     const el = document.getElementById(elId) as HTMLInputElement;
     if (!el) return;
     if(x===0 && y===0) {
@@ -69,7 +69,7 @@ function addMoveEv(elId: string, x: number, y: number) {
         startY = event.clientY - startY;
         el.removeEventListener('mousemove', handleMouseMove);
         el.removeEventListener('mouseup', handleMouseUp);
-        ModConfCtr.updatePosition(elId,startX,startY);
+        ModCtr.updatePosition(elId,startX,startY);
     }
     //处理触摸结束
     function handleTouchEnd(event: TouchEvent) {

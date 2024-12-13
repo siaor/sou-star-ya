@@ -9,6 +9,8 @@ import {DefineComponent} from "vue";
  * */
 export class Mod {
     id?: string;
-    type?: DefineComponent<{}, {}, any> | undefined;
-    props?: Record<string, any>;
+    mod: string = '';
+    conf: any;
+
+    def?: DefineComponent<{}, {}, any> | undefined;
 }

@@ -1,3 +1,4 @@
+import {ModConf} from "@/dom/def/ModConf";
 
 /**
  * 参考使用文档
@@ -6,15 +7,9 @@
  * @author Siaor
  * @date 2024-12-06 12:00:00
  * */
-export class SearchModConf{
-    x:number;
-    y:number;
-    isDrag:boolean = true;
-    engine:string;
-
-    constructor() {
-        this.x = 0;
-        this.y = 0;
-        this.engine = '';
-    }
+export class SearchModConf extends ModConf {
+    x: number = 0;
+    y: number = 0;
+    isDrag: boolean = true;
+    engine: string = '百度';
 }

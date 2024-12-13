@@ -11,5 +11,7 @@ export enum Sys {
 
     SYS_MOD_CONF_PATH = 'conf-ya',
 
-    SYS_EVENT_RELOAD_MOD = 'sys-event-reload-mod',
+    SYS_EVENT_LOAD_MODE = 'sys-event-load-mode',
+    SYS_EVENT_CACHE_MOD = 'sys-event-cache-mod',
+    SYS_EVENT_ADD_DRAG = 'sys-event-ADD-DRAG',
 }

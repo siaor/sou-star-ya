@@ -1,23 +1,33 @@
 <template>
-  <div class="ya-mod ya-mod-app" :style="{top:conf.y+'px',left:conf.x+'px'}" title="双击打开">
+  <div class="ya-mod ya-mod-app" :id="id" :style="{top:modConf.y+'px',left:modConf.x+'px'}" title="双击打开">
     <div class="ya-mod-app-logo" @mousedown="openApp">
-      <img :src="conf.logo" alt="logo">
+      <img :src="modConf.logo" alt="logo">
     </div>
     <div class="ya-mod-app-name">
-      {{ conf.name }}
+      {{ modConf.name }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {defineProps} from 'vue';
+import {defineProps, onMounted, ref} from 'vue';
 import {AppModConf} from "@/dom/def/mod/AppModConf";
+import {ModCtr} from "@/ctr/ModCtr";
+import {SysEvent} from "@/dom/def/base/SysEvent";
+import {Sys} from "@/dom/def/base/Sys";
 
 //从父组件接收的 props
 const props = defineProps<{
-  conf: AppModConf;
+  id: string;
+  mod: string;
+  conf: any;
 }>();
+//系统事件
+const emit = defineEmits(['sysEv']);
+//模组配置
+const modConf = ref<AppModConf>(new AppModConf());
 
+/*>>>>>>> 【组件自定义处理】 <<<<<<<*/
 /*双击打开*/
 let clickTimeout = 0;
 const openApp = (event: MouseEvent) => {
@@ -34,6 +44,43 @@ const openApp = (event: MouseEvent) => {
   }, 300);
 
 };
+
+/*>>>>>>> 【组件通用处理】 <<<<<<<*/
+//页面加载完成后
+onMounted(() => {
+  init();
+});
+
+//初始化
+async function init() {
+  //从缓存获取配置
+  const modAR = await ModCtr.get(props.id);
+  if (modAR.success) {
+    //有缓存：转化配置
+    Object.assign(modConf.value, modAR.data.conf);
+  } else {
+    //无缓存：从参数获取配置，并缓存数据
+    Object.assign(modConf.value, props.conf);
+
+    //调用系统事件：缓存模组信息
+    const sysEvCacheMod: SysEvent = new SysEvent(Sys.SYS_EVENT_CACHE_MOD, {
+      id: props.id,
+      mod: props.mod,
+      conf: JSON.parse(JSON.stringify(modConf.value))
+    });
+    emit('sysEv', sysEvCacheMod);
+  }
+
+  if (modConf.value.isDrag) {
+    //调用系统事件：添加模组拖拽事件
+    const sysEvAddDrag: SysEvent = new SysEvent(Sys.SYS_EVENT_ADD_DRAG, {
+      id: props.id,
+      x: modConf.value.x,
+      y: modConf.value.y
+    });
+    emit('sysEv', sysEvAddDrag);
+  }
+}
 </script>
 
 <style scoped>

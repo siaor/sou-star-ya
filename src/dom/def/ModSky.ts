@@ -1,7 +1,7 @@
 import AppMod from "@/view/mod/AppMod.vue";
 import GroupMod from "@/view/mod/GroupMod.vue";
 import SearchMod from "@/view/mod/SearchMod.vue";
-import ThemeMod from "@/view/mod/ThemeMod.vue";
+import ModeMod from "@/view/mod/ModeMod.vue";
 
 /**
  * 模组星空
@@ -10,36 +10,34 @@ import ThemeMod from "@/view/mod/ThemeMod.vue";
  * @author Siaor
  * @date 2024-12-11 08:19:02
  * */
-export const AllMod = {
+export const AllModDef = {
     AppMod,
     GroupMod,
     SearchMod,
-    ThemeMod
+    ModeMod
 }
 
 export const SysMod = {
-    ThemeMod: {
-        "mod": "ThemeMod",
+    ModeMod: {
+        "mod": "ModeMod",
         "conf": {
-            "x": 0,
-            "y": 0,
             "name": "主题",
             "logo": "/img/theme.svg",
             "list": [
                 {
                     "name": "主题Ya",
                     "logo": "/img/star.svg",
-                    "url": "/conf-ya/ya.json"
+                    "url": "/mode/ya.json"
                 },
                 {
                     "name": "游戏",
-                    "url": "/conf-ya/game.json",
-                    "logo": "/img/game.svg"
+                    "logo": "/img/game.svg",
+                    "url": "/mode/game.json"
                 },
                 {
                     "name": "学习",
-                    "url": "/conf-ya/study.json",
-                    "logo": "/img/study.svg"
+                    "logo": "/img/study.svg",
+                    "url": "/mode/study.json"
                 }
             ]
         }

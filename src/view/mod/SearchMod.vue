@@ -1,5 +1,5 @@
 <template>
-  <div class="ya-mod ya-mod-search">
+  <div class="ya-mod ya-mod-search" :id="id">
     <div class="ya-mod-search-bar">
       <select id="searchEngine">
         <option value="https://www.baidu.com/s?wd=">百度</option>
@@ -15,14 +15,24 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, ref} from 'vue';
+import {defineProps, onMounted, ref} from 'vue';
 import {SearchModConf} from "@/dom/def/mod/SearchModConf";
+import {ModCtr} from "@/ctr/ModCtr";
+import {SysEvent} from "@/dom/def/base/SysEvent";
+import {Sys} from "@/dom/def/base/Sys";
 
 //从父组件接收的 props
 const props = defineProps<{
+  id: string;
+  mod: string;
   conf: SearchModConf;
 }>();
+//系统事件
+const emit = defineEmits(['sysEv']);
+//模组配置
+const modConf = ref<SearchModConf>(new SearchModConf());
 
+/*>>>>>>> 【组件自定义处理】 <<<<<<<*/
 function doSearch() {
   const queryDom = document.getElementById('searchInput') as HTMLInputElement;
   const searchEngineDom = document.getElementById('searchEngine') as HTMLInputElement;
@@ -30,6 +40,43 @@ function doSearch() {
   const searchEngine = searchEngineDom.value;
   if (query) {
     window.open(searchEngine + encodeURIComponent(query), '_blank');
+  }
+}
+
+/*>>>>>>> 【组件通用处理】 <<<<<<<*/
+//页面加载完成后
+onMounted(() => {
+  init();
+});
+
+//初始化
+async function init() {
+  //从缓存获取配置
+  const modAR = await ModCtr.get(props.id);
+  if (modAR.success) {
+    //有缓存：转化配置
+    Object.assign(modConf.value, modAR.data.conf);
+  } else {
+    //无缓存：从参数获取配置，并缓存数据
+    Object.assign(modConf.value, props.conf);
+
+    //调用系统事件：缓存模组信息
+    const sysEvCacheMod: SysEvent = new SysEvent(Sys.SYS_EVENT_CACHE_MOD, {
+      id: props.id,
+      mod: props.mod,
+      conf: JSON.parse(JSON.stringify(modConf.value))
+    });
+    emit('sysEv', sysEvCacheMod);
+  }
+
+  if (modConf.value.isDrag) {
+    //调用系统事件：添加模组拖拽事件
+    const sysEvAddDrag: SysEvent = new SysEvent(Sys.SYS_EVENT_ADD_DRAG, {
+      id: props.id,
+      x: modConf.value.x,
+      y: modConf.value.y
+    });
+    emit('sysEv', sysEvAddDrag);
   }
 }
 </script>
@@ -72,7 +119,7 @@ function doSearch() {
   background-color: rgb(0, 0, 0, 0.7);
 }
 
-.ya-mod-search-bar select option{
+.ya-mod-search-bar select option {
   background-color: rgb(0, 0, 0, 0.7);
 }
 
@@ -114,12 +161,15 @@ function doSearch() {
     top: 35%;
     left: 7%;
   }
+
   .ya-mod-search-bar select {
     width: 18%;
   }
+
   .ya-mod-search-bar input {
     width: 64%;
   }
+
   .ya-mod-search-bar button {
     width: 18%;
   }

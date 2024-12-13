@@ -1,16 +1,17 @@
 <template>
-  <div class="ya-mod ya-mod-theme" title="双击打开/关闭" @mouseenter="doOpen" @mouseleave="doClose" @touchleave="doClose">
+  <div class="ya-mod ya-mod-theme" title="双击打开/关闭" :id="id" @mouseenter="doOpen" @mouseleave="doClose"
+       @touchleave="doClose">
     <img class="ya-mod-theme-logo-mini" :src="logoRef" alt="logo">
     <div class="ya-mod-theme-logo" @mousedown="openApp">
-      <img :src="conf.logo" alt="logo">
+      <img :src="modConf.logo" alt="logo">
     </div>
 
     <div class="ya-mod-theme-name">
-      {{ conf.name }}
+      {{ modConf.name }}
     </div>
     <div class="ya-mod-theme-box" v-show="isShow" title="选择主题">
-      <div class="ya-mod-theme-list" >
-        <div class="ya-mod-theme-item" v-for="(item, index) in conf.list" :key="index" @click="doSwitch(item,$event)">
+      <div class="ya-mod-theme-list">
+        <div class="ya-mod-theme-item" v-for="(item, index) in modConf.list" :key="index" @click="doSwitch(item,$event)">
           <div class="ya-mod-theme-logo">
             <img :src="item.logo" alt="logo">
           </div>
@@ -24,21 +25,28 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, ref} from 'vue';
-import {ThemeModConf} from "@/dom/def/mod/ThemeModConf";
+import {defineProps, onMounted, ref} from 'vue';
+import {ModeModConf} from "@/dom/def/mod/ModeModConf";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";
 import {AppModConf} from "@/dom/def/mod/AppModConf";
+import {ModCtr} from "@/ctr/ModCtr";
 
 //从父组件接收的 props
 const props = defineProps<{
-  conf: ThemeModConf;
+  id: string;
+  mod: string;
+  conf: ModeModConf;
 }>();
+//系统事件
+const emit = defineEmits(['sysEv']);
+//模组配置
+const modConf = ref<ModeModConf>(new ModeModConf());
 
+/*>>>>>>> 【组件自定义处理】 <<<<<<<*/
 const logoRef = ref(props.conf.logo);
 const nameRef = ref(props.conf.name);
 const isShow = ref(false);
-const emit = defineEmits(['sysEv']);
 
 //从缓存获取当前主题
 const confYa = localStorage.getItem(Sys.SYS_MOD_CONF_PATH);
@@ -57,7 +65,7 @@ const openApp = (event: MouseEvent) => {
   //event.preventDefault();
   if (clickTimeout === 1) {
     //触发双击
-    isShow.value = !isShow.value;
+    localStorage.removeItem(Sys.SYS_MOD_CONF_PATH);
     return;
   }
 
@@ -68,21 +76,58 @@ const openApp = (event: MouseEvent) => {
 
 };
 
-function doSwitch(actConf:AppModConf,event: MouseEvent) {
+function doSwitch(actConf: AppModConf, event: MouseEvent) {
   //event.stopPropagation();
   //event.preventDefault();
   logoRef.value = actConf.logo
   nameRef.value = actConf.name
-  const sysEv: SysEvent = new SysEvent(Sys.SYS_EVENT_RELOAD_MOD, {url: actConf.url});
+  const sysEv: SysEvent = new SysEvent(Sys.SYS_EVENT_LOAD_MODE, {url: actConf.url});
   emit('sysEv', sysEv);
 }
 
-function doOpen(){
+function doOpen() {
   isShow.value = true;
 }
 
-function doClose(){
+function doClose() {
   isShow.value = false;
+}
+
+/*>>>>>>> 【组件通用处理】 <<<<<<<*/
+//页面加载完成后
+onMounted(() => {
+  init();
+});
+
+//初始化
+async function init() {
+  //从缓存获取配置
+  const modAR = await ModCtr.get(props.id);
+  if (modAR.success) {
+    //有缓存：转化配置
+    Object.assign(modConf.value, modAR.data.conf);
+  } else {
+    //无缓存：从参数获取配置，并缓存数据
+    Object.assign(modConf.value, props.conf);
+
+    //调用系统事件：缓存模组信息
+    const sysEvCacheMod: SysEvent = new SysEvent(Sys.SYS_EVENT_CACHE_MOD, {
+      id: props.id,
+      mod: props.mod,
+      conf: JSON.parse(JSON.stringify(modConf.value))
+    });
+    emit('sysEv', sysEvCacheMod);
+  }
+
+  if (modConf.value.isDrag) {
+    //调用系统事件：添加模组拖拽事件
+    const sysEvAddDrag: SysEvent = new SysEvent(Sys.SYS_EVENT_ADD_DRAG, {
+      id: props.id,
+      x: modConf.value.x,
+      y: modConf.value.y
+    });
+    emit('sysEv', sysEvAddDrag);
+  }
 }
 </script>
 
@@ -96,7 +141,8 @@ function doClose(){
   top: 28px;
   right: 28px;
 }
-.ya-mod-theme:hover{
+
+.ya-mod-theme:hover {
   height: 77px;
   width: 77px;
 }
@@ -118,7 +164,8 @@ function doClose(){
   height: 77%;
   width: 77%;
 }
-.ya-mod-theme-logo-mini{
+
+.ya-mod-theme-logo-mini {
   height: 21px;
   width: 21px;
   position: absolute;
@@ -150,7 +197,8 @@ function doClose(){
   width: 77px;
   height: 154px;
 }
-.ya-mod-theme-list{
+
+.ya-mod-theme-list {
   width: 100%;
   height: 100%;
   overflow-y: auto;
@@ -162,13 +210,14 @@ function doClose(){
   flex-direction: column;
   background-color: rgb(255, 255, 255, 0.3);
 }
+
 .ya-mod-theme-list::-webkit-scrollbar {
   height: 7px;
   width: 21px;
-  background: rgb(255, 216, 83,0.3);
+  background: rgb(255, 216, 83, 0.3);
 }
 
-.ya-mod-theme-item{
+.ya-mod-theme-item {
   width: 77px;
   height: 77px;
   display: flex;
