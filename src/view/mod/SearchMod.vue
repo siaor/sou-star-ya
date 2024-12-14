@@ -15,9 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, onMounted, ref} from 'vue';
+import {defineProps, onMounted} from 'vue';
 import {SearchModConf} from "@/dom/def/mod/SearchModConf";
-import {ModCtr} from "@/ctr/ModCtr";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";
 
@@ -29,8 +28,6 @@ const props = defineProps<{
 }>();
 //系统事件
 const emit = defineEmits(['sysEv']);
-//模组配置
-const modConf = ref<SearchModConf>(new SearchModConf());
 
 /*>>>>>>> 【组件自定义处理】 <<<<<<<*/
 function doSearch() {
@@ -51,30 +48,12 @@ onMounted(() => {
 
 //初始化
 async function init() {
-  //从缓存获取配置
-  const modAR = await ModCtr.get(props.id);
-  if (modAR.success) {
-    //有缓存：转化配置
-    Object.assign(modConf.value, modAR.data.conf);
-  } else {
-    //无缓存：从参数获取配置，并缓存数据
-    Object.assign(modConf.value, props.conf);
-
-    //调用系统事件：缓存模组信息
-    const sysEvCacheMod: SysEvent = new SysEvent(Sys.SYS_EVENT_CACHE_MOD, {
-      id: props.id,
-      mod: props.mod,
-      conf: JSON.parse(JSON.stringify(modConf.value))
-    });
-    emit('sysEv', sysEvCacheMod);
-  }
-
-  if (modConf.value.isDrag) {
+  if (props.conf.isDrag) {
     //调用系统事件：添加模组拖拽事件
     const sysEvAddDrag: SysEvent = new SysEvent(Sys.SYS_EVENT_ADD_DRAG, {
       id: props.id,
-      x: modConf.value.x,
-      y: modConf.value.y
+      x: props.conf.x,
+      y: props.conf.y
     });
     emit('sysEv', sysEvAddDrag);
   }

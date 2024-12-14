@@ -9,7 +9,7 @@ export enum Sys {
     SYS_VERSION = 20241206,
     SYS_NAME = 'SouStarYa',
 
-    SYS_MOD_CONF_PATH = 'conf-ya',
+    SYS_MODE = 'sys-mode',
 
     SYS_EVENT_LOAD_MODE = 'sys-event-load-mode',
     SYS_EVENT_CACHE_MOD = 'sys-event-cache-mod',

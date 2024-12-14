@@ -15,11 +15,11 @@ import {ModCtr} from "@/ctr/ModCtr";
 import {ActCode} from "@/dom/def/base/ActCode";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";
-import {AllModDef} from "@/dom/def/ModSky";
+import {AllMod} from "@/dom/def/ModSky";
 import {addMoveEv} from "@/res/util/DragUtil";
+import {ActResult} from "@/dom/def/base/ActResult";
 
 //模组列表
-let modList: Mod[];
 const modListRef = shallowRef<Mod[]>([]);
 
 /**
@@ -30,28 +30,35 @@ const modListRef = shallowRef<Mod[]>([]);
  * @date 2024-12-12 03:41:49
  * */
 async function loadMode(url: string) {
-  const modAR = await ModCtr.load(url);
-  if (!modAR.success) {
+  const listAR = await ModCtr.list(url);
+  if (!listAR.success) {
     alert(ActCode.MOD_CONF_NOT_FOUND.msg);
     return;
   }
 
-  //清空历史模组
-  modList = [];
-  modList.push(...modAR.data);
+  const modList: Mod[] = [];
 
   //模组定义
-  for (let mod of modList) {
-    const modDef = AllModDef[mod.mod as keyof typeof AllModDef] as DefineComponent<{}, {}, any>;
+  const modIdList: string[] = listAR.data;
+  let modAR: ActResult;
+  let mod: Mod;
+  for (let modId of modIdList) {
+    //从缓存获取模组信息
+    modAR = await ModCtr.get(modId);
+    if (!modAR.success) continue;
+
+    mod = modAR.data;
+
+    //模组定义
+    const modDef = AllMod.def[mod.mod as keyof typeof AllMod.def] as DefineComponent<{}, {}, any>;
     if (!modDef) continue;
     mod.def = modDef;
+
+    modList.push(mod);
   }
 
   //渲染模组
-  modListRef.value = [];
-  setTimeout(function () {
-    modListRef.value = modList;
-  }, 100);
+  modListRef.value = modList;
 }
 
 /**
@@ -78,7 +85,7 @@ function sysEv(e: SysEvent) {
 
 //页面加载完成后
 onMounted(() => {
-  loadMode(localStorage.getItem(Sys.SYS_MOD_CONF_PATH) ?? '/mode/ya.json');
+  loadMode(localStorage.getItem(Sys.SYS_MODE) ?? '/mode/ya.json');
 });
 </script>
 

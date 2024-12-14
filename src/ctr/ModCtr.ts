@@ -4,7 +4,8 @@ import {ActResult} from "@/dom/def/base/ActResult";
 import {BaseCtr} from "@/ctr/BaseCtr";
 import {Sys} from "@/dom/def/base/Sys";
 import {Mod} from "@/dom/def/Mod";
-import {SysMod} from "@/dom/def/ModSky";
+import {AllMod, SysMod} from "@/dom/def/ModSky";
+import {ModConf} from "@/dom/def/ModConf";
 
 //模块配置实例
 const modConfInst: ModConfVim = new ModConfAct();
@@ -16,12 +17,18 @@ const modConfInst: ModConfVim = new ModConfAct();
  * @date 2024-12-09 12:00:00
  * */
 export class ModCtr extends BaseCtr {
-    static load(url: string): Promise<ActResult> {
+
+    static list(url: string): Promise<ActResult> {
         return new Promise(async (resolve) => {
-            const confPath = localStorage.getItem(Sys.SYS_MOD_CONF_PATH);
-            //和缓存一致时，从数据库获取模组配置
-            if (confPath && confPath === url) {
-                resolve(super.db.get(Sys.SYS_MOD_CONF_PATH));
+            //模式名称
+            const modeName: string = this.buildModeName(url);
+            const modeKey = `${modeName}-mode`;
+
+            //从缓存获取
+            const modeUrl = localStorage.getItem(modeKey);
+            if (modeUrl) {
+                localStorage.setItem(Sys.SYS_MODE,url);
+                resolve(super.db.get(modeKey));
                 return;
             }
 
@@ -33,8 +40,8 @@ export class ModCtr extends BaseCtr {
             }
 
             //数据处理
-            const modIdPre: string = this.buildModIdPre(url);
             const modList: Mod[] = confAR.data;
+            const modIdList:string[] = [];
 
             //附加系统默认模块
             //模式模组，未配置时自动附加
@@ -43,18 +50,28 @@ export class ModCtr extends BaseCtr {
             }
 
             let modIndex = 1;
+            let modId;
             for (let mod of modList) {
-                mod.id = modIdPre + modIndex;
-                mod.def = undefined;
+                modId = modeName+ '-' + modIndex;
+
+                mod.id = modId;
+                mod.conf = JSON.parse(JSON.stringify(this.buildModConf(mod)));
+
+                //缓存
+                await super.db.put(mod.id, mod);
+
+                modIdList.push(modId);
+
                 modIndex++;
             }
 
             //缓存当前配置信息
-            localStorage.setItem(Sys.SYS_MOD_CONF_PATH, url);
+            localStorage.setItem(Sys.SYS_MODE, url);
+            localStorage.setItem(modeKey, url);
             //存到数据库
-            await super.db.put(Sys.SYS_MOD_CONF_PATH, modList);
+            await super.db.put(modeKey, modIdList);
 
-            resolve(ActResult.ok(modList));
+            resolve(ActResult.ok(modIdList));
         });
     }
 
@@ -68,18 +85,18 @@ export class ModCtr extends BaseCtr {
 
     static add(url: string, mod: Mod): Promise<ActResult> {
         return new Promise(async (resolve) => {
-            const confAR: ActResult = await super.db.get(Sys.SYS_MOD_CONF_PATH);
+            const confAR: ActResult = await super.db.get(Sys.SYS_MODE);
             if (!confAR.success) {
                 resolve(confAR);
                 return;
             }
-            const modIdPre = this.buildModIdPre(url);
+            const modIdPre = this.buildModeName(url);
             const list = confAR.data as Mod[];
             const modIndex = list.length + 1;
             mod.id = modIdPre + modIndex;
             super.db.put(mod.id, mod);
             list.push(mod);
-            resolve(super.db.put(Sys.SYS_MOD_CONF_PATH, list));
+            resolve(super.db.put(Sys.SYS_MODE, list));
         });
     }
 
@@ -93,7 +110,14 @@ export class ModCtr extends BaseCtr {
         }
     }
 
-    static buildModIdPre(url: string): string {
-        return url.substring(url.lastIndexOf('/') + 1).split('.')[0] + '-';
+    static buildModeName(url: string): string {
+        return url.substring(url.lastIndexOf('/') + 1).split('.')[0];
+    }
+
+    static buildModConf(mod: Mod): ModConf {
+        const clazz = AllMod.conf[(mod.mod + 'Conf') as keyof typeof AllMod.conf];
+        const modConf: ModConf = new clazz();
+        Object.assign(modConf, mod.conf);
+        return modConf;
     }
 }

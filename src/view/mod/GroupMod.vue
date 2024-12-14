@@ -1,10 +1,10 @@
 <template>
-  <div class="ya-mod ya-mod-group" :id="id" :style="{top:modConf.y+'px',left:modConf.x+'px'}" title="双击打开">
+  <div class="ya-mod ya-mod-group" :id="id" :style="{top:conf.y+'px',left:conf.x+'px'}" title="双击打开">
     <div class="ya-mod-group-logo" @mousedown="doOpen" @touchstart="doOpen">
-      <img :src="modConf.logo" alt="logo">
+      <img :src="conf.logo" alt="logo">
     </div>
     <div class="ya-mod-group-name">
-      {{ modConf.name }}
+      {{ conf.name }}
     </div>
   </div>
   <transition name="shrink">
@@ -21,8 +21,7 @@
 import {DefineComponent, defineProps, onMounted, ref, shallowRef} from 'vue';
 import {GroupModConf} from "@/dom/def/mod/GroupModConf";
 import {Mod} from "@/dom/def/Mod";
-import {AllModDef} from "@/dom/def/ModSky";
-import {ModCtr} from "@/ctr/ModCtr";
+import {AllMod} from "@/dom/def/ModSky";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";
 
@@ -35,8 +34,6 @@ const props = defineProps<{
 }>();
 //系统事件
 const emit = defineEmits(['sysEv']);
-//模组配置
-const modConf = ref<GroupModConf>(new GroupModConf());
 
 /*>>>>>>> 【组件自定义处理】 <<<<<<<*/
 const isShow = ref(false);
@@ -62,7 +59,7 @@ const doOpen = (event: Event) => {
       mod.conf.x = ((modId % maxCount - 1) * 100) + 28;
       mod.conf.y = (Math.floor(modId / maxCount) * 100) + 28;
 
-      const modDef = AllModDef[mod.mod as keyof typeof AllModDef] as DefineComponent<{}, {}, any>;
+      const modDef = AllMod.def[mod.mod as keyof typeof AllMod.def] as DefineComponent<{}, {}, any>;
       if (!modDef) return;
 
       mod.def = modDef;
@@ -96,30 +93,12 @@ onMounted(() => {
 
 //初始化
 async function init() {
-  //从缓存获取配置
-  const modAR = await ModCtr.get(props.id);
-  if (modAR.success) {
-    //有缓存：转化配置
-    Object.assign(modConf.value, modAR.data.conf);
-  } else {
-    //无缓存：从参数获取配置，并缓存数据
-    Object.assign(modConf.value, props.conf);
-
-    //调用系统事件：缓存模组信息
-    const sysEvCacheMod: SysEvent = new SysEvent(Sys.SYS_EVENT_CACHE_MOD, {
-      id: props.id,
-      mod: props.mod,
-      conf: JSON.parse(JSON.stringify(modConf.value))
-    });
-    emit('sysEv', sysEvCacheMod);
-  }
-
-  if (modConf.value.isDrag) {
-    //调用系统事件：添加模组拖拽事件
+  //调用系统事件：添加模组拖拽事件
+  if (props.conf.isDrag) {
     const sysEvAddDrag: SysEvent = new SysEvent(Sys.SYS_EVENT_ADD_DRAG, {
       id: props.id,
-      x: modConf.value.x,
-      y: modConf.value.y
+      x: props.conf.x,
+      y: props.conf.y
     });
     emit('sysEv', sysEvAddDrag);
   }
