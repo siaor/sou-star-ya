@@ -1,15 +1,17 @@
 <template>
-  <div class="ya-mod ya-mod-mode" :id="id" @mouseenter="doOpen" @mouseleave="doClose"
-       @touchleave="doClose" title="双击打开[模式设置]">
+
+  <div class="ya-mod ya-mod-mode" :id="id" @mouseenter="doOpenMode" @mouseleave="doCloseMode" @touchleave="doCloseMode"
+       title="双击打开[模式设置]">
+
     <img class="ya-mod-mode-logo-mini" :src="logoRef" alt="logo">
     <div class="ya-mod-mode-logo" @mousedown="openApp">
       <img :src="conf.logo" alt="logo">
     </div>
-
     <div class="ya-mod-mode-name">
       {{ conf.name }}
     </div>
-    <div class="ya-mod-mode-box" v-show="isShow" title="点击切换模式">
+
+    <div class="ya-mod-mode-box" v-show="isShowMode" title="点击切换模式">
       <div class="ya-mod-mode-list">
         <div class="ya-mod-mode-item" v-for="(item, index) in conf.list" :key="index" @click="doSwitch(item,$event)">
           <div class="ya-mod-mode-logo">
@@ -22,6 +24,34 @@
       </div>
     </div>
   </div>
+  <div class="ya-mod-mode-setting" v-show="isShowModeSetting" title="">
+    <div class="ya-mod-mode-setting-close"><img src="/img/icon/close.svg" alt="close" @click="doCloseModeSetting"></div>
+    <div class="ya-mod-mode-setting-content">
+      <div class="ya-mod-mode-setting-content-title">模式设置</div>
+
+      <div class="ya-mod-mode-setting-content-list">
+        <div class="ya-mod-mode-setting-content-item" v-for="(item, index) in conf.list" :key="index">
+          <div class="ya-mod-mode-setting-content-mode">
+            <div class="ya-mod-mode-logo" @mousedown="openApp">
+              <img :src="item.logo" alt="logo">
+            </div>
+            <div class="ya-mod-mode-name">
+              {{ item.name }}
+            </div>
+          </div>
+          <div class="ya-mod-mode-setting-content-mode-fun">
+            <button @click="doClearMode(item.url)">重置</button>
+            <button @click="doSwitch(item,$event)">应用</button>
+            <button @click="doExport(item.url)">导出</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ya-mod-mode-setting-content-footer">
+        <button @click="doClearMode()">全部重置</button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -30,6 +60,8 @@ import {ModeModConf} from "@/dom/def/mod/ModeModConf";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";
 import {AppModConf} from "@/dom/def/mod/AppModConf";
+import {ModCtr} from "@/ctr/ModCtr";
+import {DownloadUtil} from "@/res/util/DownloadUtil";
 
 //从父组件接收的 props
 const props = defineProps<{
@@ -43,8 +75,10 @@ const emit = defineEmits(['sysEv']);
 /*>>>>>>> 【组件自定义处理】 <<<<<<<*/
 const logoRef = ref(props.conf.logo);
 const nameRef = ref(props.conf.name);
-const isShow = ref(false);
+const isShowMode = ref(false);
+const isShowModeSetting = ref(false);
 
+const modeSettingKey = 'mode-setting-show';
 
 /*双击打开*/
 let clickTimeout = 0;
@@ -53,7 +87,7 @@ const openApp = (event: MouseEvent) => {
   //event.preventDefault();
   if (clickTimeout === 1) {
     //触发双击
-    localStorage.removeItem(Sys.SYS_MODE);
+    doOpenModeSetting();
     return;
   }
 
@@ -73,12 +107,53 @@ function doSwitch(actConf: AppModConf, event: MouseEvent) {
   emit('sysEv', sysEv);
 }
 
-function doOpen() {
-  isShow.value = true;
+function doOpenMode() {
+  isShowMode.value = true;
 }
 
-function doClose() {
-  isShow.value = false;
+function doCloseMode() {
+  isShowMode.value = false;
+}
+
+function doOpenModeSetting() {
+  localStorage.setItem(modeSettingKey,'true');
+  isShowModeSetting.value = true;
+}
+
+function doCloseModeSetting() {
+  localStorage.setItem(modeSettingKey,'false');
+  isShowModeSetting.value = false;
+}
+
+function doClearMode(url?:string) {
+  let actUrl;
+  if(url){
+    actUrl = url;
+    const modeName = ModCtr.buildModeName(url);
+    localStorage.removeItem(`${modeName}-mode`);
+  }else {
+    actUrl = localStorage.getItem(Sys.SYS_MODE);
+    localStorage.clear();
+  }
+
+  const sysEv: SysEvent = new SysEvent(Sys.SYS_EVENT_LOAD_MODE, {url: actUrl});
+  emit('sysEv', sysEv);
+}
+
+async function doExport(url: string) {
+  const modeName = ModCtr.buildModeName(url);
+
+  //获取模式内容
+  let content = '';
+
+  const modIdListAR = await ModCtr.get(`${modeName}-mode`);
+  if (modIdListAR.success) {
+    content = JSON.stringify({mod: props.mod, conf: props.conf});
+  } else {
+    content = JSON.stringify({mod: props.mod, conf: props.conf});
+  }
+
+  DownloadUtil.exportFile(modeName + '.json', content);
 }
 
 /*>>>>>>> 【组件通用处理】 <<<<<<<*/
@@ -107,6 +182,11 @@ async function init() {
       logoRef.value = actMode.logo
       nameRef.value = actMode.name
     }
+  }
+
+  //模式设置窗口
+  if(localStorage.getItem(modeSettingKey) === 'true') {
+    isShowModeSetting.value = true;
   }
 }
 </script>
@@ -208,10 +288,149 @@ async function init() {
   cursor: pointer;
 }
 
+.ya-mod-mode-setting {
+  position: fixed;
+  margin-right: 77px;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0, 0, 0, 0.7);
+  z-index: 99;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ya-mod-mode-setting-close {
+  position: fixed;
+  width: 42px;
+  height: 42px;
+  top: 28px;
+  right: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ya-mod-mode-setting-close img {
+  width: 77%;
+  height: 77%;
+  cursor: pointer;
+}
+
+.ya-mod-mode-setting-content {
+  width: 77%;
+  height: 77%;
+  background-color: rgb(255, 255, 255, 0.1);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.ya-mod-mode-setting-content-title {
+  width: 100%;
+  height: 42px;
+  font-size: 21px;
+  color: white;
+  text-shadow: -1px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 1px 0 #000,
+  1px 1px 0 #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.ya-mod-mode-setting-content-list {
+  width: 99%;
+  flex: 1;
+}
+
+.ya-mod-mode-setting-content-item {
+  width: 100%;
+  height: 81px;
+  border: 1px solid rgb(255, 255, 255, 0.1);
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ya-mod-mode-setting-content-item:hover {
+  background-color: rgb(255, 255, 255, 0.1);
+}
+
+.ya-mod-mode-setting-content-mode-fun {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  overflow-x: auto;
+}
+
+.ya-mod-mode-setting-content-mode-fun button {
+  width: 77px;
+  height: 35px;
+  margin: 14px;
+  border-radius: 7px;
+  background-color: rgb(255, 255, 255, 0.1);
+  cursor: pointer;
+  white-space: nowrap;
+  color: white;
+  text-shadow: -1px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 1px 0 #000,
+  1px 1px 0 #000;
+}
+
+.ya-mod-mode-setting-content-mode-fun button:hover {
+  background-color: rgb(255, 255, 255, 0.3);
+}
+
+.ya-mod-mode-setting-content-mode {
+  height: 77px;
+  width: 77px;
+  margin: 4px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.ya-mod-mode-setting-content-footer {
+  width: 100%;
+  height: 56px;
+  background-color: rgb(255, 255, 255, 0.1);
+  border-radius: 0 0 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ya-mod-mode-setting-content-footer button {
+  width: 30%;
+  height: 42px;
+  background-color: rgb(255, 255, 255, 0.1);
+  border-radius: 14px;
+  cursor: pointer;
+  color: white;
+  text-shadow: -1px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 1px 0 #000,
+  1px 1px 0 #000;
+}
+
+.ya-mod-mode-setting-content-footer button:hover {
+  background-color: rgb(255, 255, 255, 0.2);
+}
+
 /* >>>>>>>【响应式样式】<<<<<<< */
 /* 小屏幕：手机 */
 @media (max-width: 768px) {
-
+  .ya-mod-mode-setting-content-mode-fun{
+    justify-content: flex-start;
+  }
 }
 
 
