@@ -3,20 +3,11 @@
 <h1 align="center">
     SouStarYa 🔍搜星鸦⭐
 </h1>
-<h4 align="center">
-    🌏人 人 都 在 用 的 浏 览 器 首 页🏠
-</h4>
-
-<h3 align="center">
-
-    🐦智慧之鸦
-
-    ✨点亮喜爱，让每一次点击都成为珍藏！
-
-    🏘️安得广厦千万间，大庇天下寒士俱欢颜！
-
-    ❤️点赞鸦！⭐收藏鸦！💬评论鸦！🌟给个小星星鸦！
-</h3>
+<h4 align="center">🌏人 人 都 在 用 的 浏 览 器 首 页🏠</h4>
+<h3 align="center">🐦智慧之鸦</h3>
+<h3 align="center">✨点亮喜爱，让每一次点击都成为珍藏！</h3>
+<h3 align="center">️安得广厦千万间，大庇天下寒士俱欢颜！</h3>
+<h3 align="center">️点赞鸦！⭐收藏鸦！💬评论鸦！🌟给个小星星鸦！</h3>
 
 
 <div align="center">
@@ -139,11 +130,12 @@ pnpm build
 
 
 
-| 属性 |  含义  | 类型  | 默认值 |  说明 |
-|:--:|:----:|:---:|:---:|:--:|
-| x  | 横坐标  | 数字  |  0  | 单位px |
-| y  | 纵坐标  | 数字  |  0  | 单位px |
-| engine | 搜索引擎 | 字符串 | 百度  |    |
+| 属性 |  含义  | 类型  | 默认值  |  说明 |
+|:--:|:----:|:---:|:----:|:--:|
+| x  | 横坐标  | 数字  |  0   | 单位px |
+| y  | 纵坐标  | 数字  |  0   | 单位px |
+|  isDrag   | 是否可拖拽 | 布尔  | true |  |
+| engine | 搜索引擎 | 字符串 |  百度  |    |
 
 注：坐标原点为页面左上角，全0为使用默认
 
@@ -180,6 +172,7 @@ pnpm build
 |:----:|:----:|:---:|:---:|:--:|
 |  x   | 横坐标  | 数字  |  0  | 单位px |
 |  y   | 纵坐标  | 数字  |  0  | 单位px |
+|  isDrag   | 是否可拖拽 | 布尔  | true |  |
 | name | 应用名称 | 字符串 |   |    |
 | url  | 跳转链接 | 字符串 |   |    |
 | logo | 应用图标 | 字符串 |   |    |
@@ -236,6 +229,7 @@ pnpm build
 |:----:|:------:|:---:|:---:|:--:|
 |  x   |  横坐标   | 数字  |  0  | 单位px |
 |  y   |  纵坐标   | 数字  |  0  | 单位px |
+|  isDrag   | 是否可拖拽 | 布尔  | true |  |
 | name |  分组名称  | 字符串 |   |    |
 | logo |  应用图标  | 字符串 |   |    |
 | list | 应用模组数组 | 数组  |   |    |
@@ -270,21 +264,22 @@ pnpm build
 ]
 ```
 
-## 6.4 主题模组
+## 6.4 模式模组
 * 模组名称
 ```
-ThemeMod
+ModeMod
 ```
 
 * 模组配置
 
-|  属性  |  含义  | 类型  | 默认值 |  说明 |
-|:----:|:----:|:---:|:---:|:--:|
-|  x   | 横坐标  | 数字  |  0  | 单位px |
-|  y   | 纵坐标  | 数字  |  0  | 单位px |
-| name | 分组名称 | 字符串 |   |    |
-| logo | 应用图标 | 字符串 |   |    |
-| list | 主题数组 | 数组  |   |    |
+|  属性  |  含义   | 类型  |  默认值  |  说明 |
+|:----:|:-----:|:---:|:-----:|:--:|
+|  x   |  横坐标  | 数字  |   0   | 单位px |
+|  y   |  纵坐标  | 数字  |   0   | 单位px |
+|  isDrag   | 是否可拖拽 | 布尔  | false |  |
+| name | 分组名称  | 字符串 |       |    |
+| logo | 应用图标  | 字符串 |       |    |
+| list | 模式数组  | 数组  |       |    |
 
 注：坐标原点为页面左上角，全0为使用默认
 
@@ -293,27 +288,28 @@ ThemeMod
 ```
 [
   {
-    "mod": "ThemeMod",
+    "mod": "ModeMod",
     "conf": {
       "x": 0,
       "y": 0,
-      "name": "主题",
-      "logo": "/img/theme.svg",
+      "isDrag": false,
+      "name": "模式",
+      "logo": "/img/mode/mode.svg",
       "list": [
         {
-          "name": "主题Ya",
-          "logo": "/img/star.svg",
-          "url": "/conf-ya/ya.json"
+          "name": "Ya",
+          "logo": "/img/mode/ya.svg"
+          "url": "/mode/ya.json",
         },
         {
           "name": "游戏",
-          "url": "/conf-ya/game.json",
-          "logo": "/img/game.svg"
+          "logo": "/img/mode/game.svg"
+          "url": "/mode/game.json",
         },
         {
           "name": "学习",
-          "url": "/conf-ya/study.json",
-          "logo": "/img/study.svg"
+          "logo": "/img/mode/study.svg"
+          "url": "/mode/study.json",
         }
       ]
     }

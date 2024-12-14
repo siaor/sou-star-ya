@@ -33,22 +33,22 @@ export const SysMod = {
     ModeMod: {
         "mod": "ModeMod",
         "conf": {
-            "name": "主题",
-            "logo": "/img/theme.svg",
+            "name": "模式",
+            "logo": "/img/mode/mode.svg",
             "list": [
                 {
-                    "name": "主题Ya",
-                    "logo": "/img/star.svg",
+                    "name": "Ya",
+                    "logo": "/img/mode/ya.svg",
                     "url": "/mode/ya.json"
                 },
                 {
                     "name": "游戏",
-                    "logo": "/img/game.svg",
+                    "logo": "/img/mode/game.svg",
                     "url": "/mode/game.json"
                 },
                 {
                     "name": "学习",
-                    "logo": "/img/study.svg",
+                    "logo": "/img/mode/study.svg",
                     "url": "/mode/study.json"
                 }
             ]

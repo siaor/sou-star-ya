@@ -13,6 +13,6 @@ export class ModeModConf extends ModConf{
     y:number = 0;
     isDrag:boolean=false;
     name: string = '主题';
-    logo: string = '/img/theme.svg';
+    logo: string = '/img/mode.svg';
     list: AppModConf[] = [];
 }
