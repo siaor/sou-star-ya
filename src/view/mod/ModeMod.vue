@@ -13,7 +13,7 @@
 
     <div class="ya-mod-mode-box" v-show="isShowMode" title="点击切换模式">
       <div class="ya-mod-mode-list">
-        <div class="ya-mod-mode-item" v-for="(item, index) in conf.list" :key="index" @click="doSwitch(item,$event)">
+        <div class="ya-mod-mode-item" v-for="(item, index) in modeList" :key="index" @click="doSwitch(item,$event)">
           <div class="ya-mod-mode-logo">
             <img :src="item.logo" alt="logo">
           </div>
@@ -30,7 +30,7 @@
       <div class="ya-mod-mode-setting-content-title">模式设置</div>
 
       <div class="ya-mod-mode-setting-content-list">
-        <div class="ya-mod-mode-setting-content-item" v-for="(item, index) in conf.list" :key="index">
+        <div class="ya-mod-mode-setting-content-item" v-for="(item, index) in modeList" :key="index">
           <div class="ya-mod-mode-setting-content-mode">
             <div class="ya-mod-mode-logo" @mousedown="openApp">
               <img :src="item.logo" alt="logo">
@@ -59,9 +59,10 @@ import {defineProps, onMounted, ref} from 'vue';
 import {ModeModConf} from "@/dom/def/mod/ModeModConf";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";
-import {AppModConf} from "@/dom/def/mod/AppModConf";
 import {ModCtr} from "@/ctr/ModCtr";
 import {DownloadUtil} from "@/res/util/DownloadUtil";
+import {Mode} from "@/dom/def/Mode";
+import {ModeCtr} from "@/ctr/ModeCtr";
 
 //从父组件接收的 props
 const props = defineProps<{
@@ -77,6 +78,8 @@ const logoRef = ref(props.conf.logo);
 const nameRef = ref(props.conf.name);
 const isShowMode = ref(false);
 const isShowModeSetting = ref(false);
+
+const modeList = ref<Mode[]>([]);
 
 const modeSettingKey = 'mode-setting-show';
 
@@ -98,12 +101,12 @@ const openApp = (event: MouseEvent) => {
 
 };
 
-function doSwitch(actConf: AppModConf, event: MouseEvent) {
+function doSwitch(mode: Mode, event: MouseEvent) {
   //event.stopPropagation();
   //event.preventDefault();
-  logoRef.value = actConf.logo
-  nameRef.value = actConf.name
-  const sysEv: SysEvent = new SysEvent(Sys.SYS_EVENT_LOAD_MODE, {url: actConf.url});
+  logoRef.value = mode.logo
+  nameRef.value = mode.name
+  const sysEv: SysEvent = new SysEvent(Sys.SYS_EVENT_LOAD_MODE, {url: mode.url});
   emit('sysEv', sysEv);
 }
 
@@ -116,22 +119,22 @@ function doCloseMode() {
 }
 
 function doOpenModeSetting() {
-  localStorage.setItem(modeSettingKey,'true');
+  localStorage.setItem(modeSettingKey, 'true');
   isShowModeSetting.value = true;
 }
 
 function doCloseModeSetting() {
-  localStorage.setItem(modeSettingKey,'false');
+  localStorage.setItem(modeSettingKey, 'false');
   isShowModeSetting.value = false;
 }
 
-function doClearMode(url?:string) {
+function doClearMode(url?: string) {
   let actUrl;
-  if(url){
+  if (url) {
     actUrl = url;
     const modeName = ModCtr.buildModeName(url);
     localStorage.removeItem(`${modeName}-mode`);
-  }else {
+  } else {
     actUrl = localStorage.getItem(Sys.SYS_MODE);
     localStorage.clear();
   }
@@ -143,7 +146,7 @@ function doClearMode(url?:string) {
 async function doExport(url: string) {
   const modeName = ModCtr.buildModeName(url);
 
-  //获取模式内容
+  //todo:获取模式内容
   let content = '';
 
   const modIdListAR = await ModCtr.get(`${modeName}-mode`);
@@ -164,6 +167,11 @@ onMounted(() => {
 
 //初始化
 async function init() {
+  //模式设置窗口
+  if (localStorage.getItem(modeSettingKey) === 'true') {
+    isShowModeSetting.value = true;
+  }
+
   //调用系统事件：添加模组拖拽事件
   if (props.conf.isDrag) {
     const sysEvAddDrag: SysEvent = new SysEvent(Sys.SYS_EVENT_ADD_DRAG, {
@@ -174,19 +182,20 @@ async function init() {
     emit('sysEv', sysEvAddDrag);
   }
 
+  //获取模式列表
+  const modeListAR = await ModeCtr.list();
+  if (modeListAR.success) {
+    modeList.value = modeListAR.data;
+  }
+
   //从缓存获取当前模式
   const sysModeUrl = localStorage.getItem(Sys.SYS_MODE);
   if (sysModeUrl) {
-    const actMode = props.conf.list.find(item => item.url === sysModeUrl);
+    const actMode = modeList.value.find(item => item.url === sysModeUrl);
     if (actMode) {
       logoRef.value = actMode.logo
       nameRef.value = actMode.name
     }
-  }
-
-  //模式设置窗口
-  if(localStorage.getItem(modeSettingKey) === 'true') {
-    isShowModeSetting.value = true;
   }
 }
 </script>
@@ -428,7 +437,7 @@ async function init() {
 /* >>>>>>>【响应式样式】<<<<<<< */
 /* 小屏幕：手机 */
 @media (max-width: 768px) {
-  .ya-mod-mode-setting-content-mode-fun{
+  .ya-mod-mode-setting-content-mode-fun {
     justify-content: flex-start;
   }
 }

@@ -35,23 +35,7 @@ export const SysMod = {
         "conf": {
             "name": "模式",
             "logo": "/img/mode/mode.svg",
-            "list": [
-                {
-                    "name": "Ya",
-                    "logo": "/img/mode/ya.svg",
-                    "url": "/mode/ya.json"
-                },
-                {
-                    "name": "游戏",
-                    "logo": "/img/mode/game.svg",
-                    "url": "/mode/game.json"
-                },
-                {
-                    "name": "学习",
-                    "logo": "/img/mode/study.svg",
-                    "url": "/mode/study.json"
-                }
-            ]
+            "isDrag": false
         }
     }
 }

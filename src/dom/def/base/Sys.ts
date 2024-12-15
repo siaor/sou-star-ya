@@ -10,6 +10,7 @@ export enum Sys {
     SYS_NAME = 'SouStarYa',
 
     SYS_MODE = 'sys-mode',
+    SYS_MODE_PATH = '/sys/mode.json',
 
     SYS_EVENT_LOAD_MODE = 'sys-event-load-mode',
     SYS_EVENT_CACHE_MOD = 'sys-event-cache-mod',
