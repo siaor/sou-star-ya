@@ -7,11 +7,13 @@
   {
     "name": "游戏",
     "logo": "/img/mode/game.svg",
-    "url": "/mode/game.json"
+    "url": "/mode/game.json",
+    "bg": "https://pic.3h3.com/up/2014-6/20146614141118531874.jpg"
   },
   {
     "name": "学习",
     "logo": "/img/mode/study.svg",
-    "url": "/mode/study.json"
+    "url": "/mode/study.json",
+    "bg": "https://pic.rmb.bdstatic.com/bjh/gallery/92b56af984d1a65a9fd0cf5cba8f7780.jpeg@s_0,w_2000"
   }
 ]

@@ -1,8 +1,6 @@
 <template>
-  <div class="ya-bg">
-    <div class="star" ref="starsRef"/>
-    <div class="meteor" ref="meteorRef" v-for="(item, index) in meteors" :key="index"/>
-  </div>
+  <div class="star" ref="starsRef"/>
+  <div class="meteor" ref="meteorRef" v-for="(item, index) in meteors" :key="index"/>
 </template>
 
 <script setup lang="ts">
@@ -60,17 +58,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 背景 */
-.ya-bg {
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  left: 0;
-  bottom: 0;
-  z-index: -1;
-  background-image: radial-gradient(ellipse at top, #050b12 0%, #181b25 100%);
-}
-
 /* 星星 */
 .star {
   width: 1px;

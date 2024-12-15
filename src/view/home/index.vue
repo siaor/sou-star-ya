@@ -3,13 +3,13 @@
     <component v-for="(mod, index) in modListRef" :key="index" :is="mod.def" :id="mod.id" v-bind="mod" @sysEv="sysEv"/>
   </div>
 
-  <StarBg></StarBg>
+  <SysBg v-bind="actMode"></SysBg>
 </template>
 
 <script setup lang="ts">
 import './index.css'
-import {DefineComponent, onMounted, shallowRef} from "vue";
-import StarBg from '@/view/bg/StarBg.vue'
+import {DefineComponent, onMounted, ref, shallowRef} from "vue";
+import SysBg from '@/view/bg/SysBg.vue'
 import {Mod} from "@/dom/def/Mod";
 import {ModCtr} from "@/ctr/ModCtr";
 import {ActCode} from "@/dom/def/base/ActCode";
@@ -18,9 +18,12 @@ import {Sys} from "@/dom/def/base/Sys";
 import {AllMod} from "@/dom/def/ModSky";
 import {addMoveEv} from "@/res/util/DragUtil";
 import {ActResult} from "@/dom/def/base/ActResult";
+import {Mode} from "@/dom/def/Mode";
 
 //模组列表
 const modListRef = shallowRef<Mod[]>([]);
+
+const actMode = shallowRef<Mode>(new Mode());
 
 /**
  * 加载模式
@@ -57,6 +60,8 @@ async function loadMode(url: string) {
     modList.push(mod);
   }
 
+  //渲染背景
+
   //渲染模组
   modListRef.value = modList;
 }
@@ -69,8 +74,11 @@ async function loadMode(url: string) {
  * */
 function sysEv(e: SysEvent) {
   switch (e.name) {
-    case Sys.SYS_EVENT_LOAD_MODE:
+    case Sys.SYS_EVENT_RELOAD_MODE:
       loadMode(e.data.url);
+      break;
+    case Sys.SYS_EVENT_RELOAD_BG:
+      actMode.value = e.data;
       break;
     case Sys.SYS_EVENT_CACHE_MOD:
       ModCtr.cache(e.data);

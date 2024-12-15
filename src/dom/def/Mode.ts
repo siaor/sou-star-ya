@@ -8,4 +8,5 @@ export class Mode {
     name: string = '';
     logo: string = '';
     url: string = '';
+    bg: string = '';
 }

@@ -107,8 +107,8 @@ function doSwitch(mode: Mode, event: MouseEvent) {
   //event.preventDefault();
   logoRef.value = mode.logo
   nameRef.value = mode.name
-  const sysEv: SysEvent = new SysEvent(Sys.SYS_EVENT_LOAD_MODE, {url: mode.url});
-  emit('sysEv', sysEv);
+  emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_MODE, mode));
+  emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_BG, mode));
 }
 
 function doOpenMode() {
@@ -140,7 +140,7 @@ function doClearMode(url?: string) {
     localStorage.clear();
   }
 
-  const sysEv: SysEvent = new SysEvent(Sys.SYS_EVENT_LOAD_MODE, {url: actUrl});
+  const sysEv: SysEvent = new SysEvent(Sys.SYS_EVENT_RELOAD_MODE, {url: actUrl});
   emit('sysEv', sysEv);
 }
 
@@ -195,6 +195,7 @@ async function init() {
     if (actMode) {
       logoRef.value = actMode.logo
       nameRef.value = actMode.name
+      emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_BG, actMode));
     }
   }
 }
