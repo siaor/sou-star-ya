@@ -21,8 +21,8 @@ export class ModCtr extends BaseCtr {
     static list(url: string): Promise<ActResult> {
         return new Promise(async (resolve) => {
             //模式名称
-            const modeName: string = this.buildModeName(url);
-            const modeKey = `${modeName}-mode`;
+            const modeName: string = super.buildModeName(url);
+            const modeKey = super.buildModeKey(modeName);
 
             //从缓存获取
             const modeUrl = localStorage.getItem(modeKey);
@@ -90,7 +90,7 @@ export class ModCtr extends BaseCtr {
                 resolve(confAR);
                 return;
             }
-            const modIdPre = this.buildModeName(url);
+            const modIdPre = super.buildModeName(url);
             const list = confAR.data as Mod[];
             const modIndex = list.length + 1;
             mod.id = modIdPre + modIndex;
@@ -108,10 +108,6 @@ export class ModCtr extends BaseCtr {
             modConf.conf.y = y;
             await super.db.put(modId, modConf);
         }
-    }
-
-    static buildModeName(url: string): string {
-        return url.substring(url.lastIndexOf('/') + 1).split('.')[0];
     }
 
     static buildModConf(mod: Mod): ModConf {

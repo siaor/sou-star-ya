@@ -69,6 +69,7 @@ const props = defineProps<{
   id: string;
   mod: string;
   conf: ModeModConf;
+  def: any;
 }>();
 //系统事件
 const emit = defineEmits(['sysEv']);
@@ -133,7 +134,7 @@ function doClearMode(url?: string) {
   if (url) {
     actUrl = url;
     const modeName = ModCtr.buildModeName(url);
-    localStorage.removeItem(`${modeName}-mode`);
+    localStorage.removeItem(ModeCtr.buildModeKey(modeName));
   } else {
     actUrl = localStorage.getItem(Sys.SYS_MODE);
     localStorage.clear();
@@ -146,15 +147,14 @@ function doClearMode(url?: string) {
 async function doExport(url: string) {
   const modeName = ModCtr.buildModeName(url);
 
-  //todo:获取模式内容
-  let content = '';
-
-  const modIdListAR = await ModCtr.get(`${modeName}-mode`);
-  if (modIdListAR.success) {
-    content = JSON.stringify({mod: props.mod, conf: props.conf});
-  } else {
-    content = JSON.stringify({mod: props.mod, conf: props.conf});
+  //获取模式内容
+  const modeAR = await ModeCtr.exportMode(url);
+  if (!modeAR.success) {
+    alert(modeAR.msg);
+    return;
   }
+
+  let content = JSON.stringify(modeAR.data);
 
   DownloadUtil.exportFile(modeName + '.json', content);
 }
