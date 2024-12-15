@@ -2,7 +2,8 @@
   {
     "name": "Ya",
     "logo": "/img/mode/ya.svg",
-    "url": "/mode/ya.json"
+    "url": "/mode/ya.json",
+    "bg": ""
   },
   {
     "name": "游戏",

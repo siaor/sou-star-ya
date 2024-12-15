@@ -32,4 +32,26 @@ onMounted(() => {
   min-height: 100%;
   overflow: hidden;
 }
+
+/* >>>>>>>【响应式样式】<<<<<<< */
+/* 小屏幕：手机 */
+@media (max-width: 768px) {
+  .ya-bg-img img {
+    width: auto;
+    height: 100%;
+    margin-left: -100%;
+  }
+}
+
+
+/* 中屏幕：平板 */
+@media (min-width: 769px) and (max-width: 992px) {
+
+}
+
+
+/* 中屏幕：笔记本 */
+@media (min-width: 993px) and (max-width: 1399px) {
+
+}
 </style>

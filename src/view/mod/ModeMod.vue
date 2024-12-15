@@ -1,6 +1,6 @@
 <template>
 
-  <div class="ya-mod ya-mod-mode" :id="id" @mouseenter="doOpenMode" @mouseleave="doCloseMode" @touchleave="doCloseMode"
+  <div class="ya-mod ya-mod-mode" :id="id" @mouseenter="doOpenMode" @touchstart="doOpenMode" @mouseleave="doCloseMode" @touchleave="doCloseMode"
        title="双击打开[模式设置]">
 
     <img class="ya-mod-mode-logo-mini" :src="logoRef" alt="logo">
