@@ -66,4 +66,8 @@ export class ModeCtr extends BaseCtr {
             resolve(await modConfInst.get(url));
         });
     }
+
+    static clear(): Promise<ActResult> {
+        return super.db.delete(Sys.SYS_MODE);
+    }
 }

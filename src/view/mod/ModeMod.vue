@@ -129,7 +129,7 @@ function doCloseModeSetting() {
   isShowModeSetting.value = false;
 }
 
-function doClearMode(url?: string) {
+async function doClearMode(url?: string) {
   let actUrl;
   if (url) {
     actUrl = url;
@@ -140,8 +140,11 @@ function doClearMode(url?: string) {
     localStorage.clear();
   }
 
-  const sysEv: SysEvent = new SysEvent(Sys.SYS_EVENT_RELOAD_MODE, {url: actUrl});
-  emit('sysEv', sysEv);
+  //重刷模式列表
+  await ModeCtr.clear();
+  await loadMode();
+
+  emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_MODE, {url: actUrl}));
 }
 
 async function doExport(url: string) {
@@ -182,6 +185,10 @@ async function init() {
     emit('sysEv', sysEvAddDrag);
   }
 
+  await loadMode();
+}
+
+async function loadMode(){
   //获取模式列表
   const modeListAR = await ModeCtr.list();
   if (modeListAR.success) {
