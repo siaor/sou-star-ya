@@ -1,6 +1,7 @@
 <template>
 
-  <div class="ya-mod ya-mod-mode" :id="id" @mouseenter="doOpenMode" @touchstart="doOpenMode" @mouseleave="doCloseMode" @touchleave="doCloseMode"
+  <div class="ya-mod ya-mod-mode" :id="id" @mouseenter="doOpenMode" @touchstart="doOpenMode" @mouseleave="doCloseMode"
+       @touchleave="doCloseMode"
        title="双击打开[模式设置]">
 
     <img class="ya-mod-mode-logo-mini" :src="logoRef" alt="logo">
@@ -25,9 +26,15 @@
     </div>
   </div>
   <div class="ya-mod-mode-setting" v-show="isShowModeSetting" title="">
-    <div class="ya-mod-mode-setting-close"><img src="/img/icon/close.svg" alt="close" @click="doCloseModeSetting"></div>
     <div class="ya-mod-mode-setting-content">
-      <div class="ya-mod-mode-setting-content-title">模式设置</div>
+      <div class="ya-mod-mode-setting-content-title">
+        <div class="ya-mod-mode-setting-menu"></div>
+        <span>模式设置</span>
+        <div class="ya-mod-mode-setting-menu ya-mod-mode-setting-menu-right">
+          <div class="ya-mod-mode-setting-close"><img src="/img/icon/close.svg" alt="close" @click="doCloseModeSetting">
+          </div>
+        </div>
+      </div>
 
       <div class="ya-mod-mode-setting-content-list">
         <div class="ya-mod-mode-setting-content-item" v-for="(item, index) in modeList" :key="index">
@@ -188,7 +195,7 @@ async function init() {
   await loadMode();
 }
 
-async function loadMode(){
+async function loadMode() {
   //获取模式列表
   const modeListAR = await ModeCtr.list();
   if (modeListAR.success) {
@@ -317,12 +324,21 @@ async function loadMode(){
   align-items: center;
 }
 
+.ya-mod-mode-setting-menu {
+  width: 28%;
+  height: 100%;
+}
+
+.ya-mod-mode-setting-menu-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .ya-mod-mode-setting-close {
-  position: fixed;
-  width: 42px;
-  height: 42px;
-  top: 28px;
-  right: 28px;
+  width: 35px;
+  height: 35px;
+  margin-right: 7px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -354,7 +370,7 @@ async function loadMode(){
   -1px 1px 0 #000,
   1px 1px 0 #000;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   text-align: center;
 }
