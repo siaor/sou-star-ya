@@ -28,7 +28,7 @@ onMounted(() => {
 }
 
 .ya-bg-img img {
-  min-width: 100%;
+  width: 100%;
   min-height: 100%;
   overflow: hidden;
 }
