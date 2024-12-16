@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import './index.css'
-import {DefineComponent, onMounted, ref, shallowRef} from "vue";
+import {DefineComponent, onMounted, shallowRef} from "vue";
 import SysBg from '@/view/bg/SysBg.vue'
 import {Mod} from "@/dom/def/Mod";
 import {ModCtr} from "@/ctr/ModCtr";
@@ -60,10 +60,12 @@ async function loadMode(url: string) {
     modList.push(mod);
   }
 
-  //渲染背景
-
   //渲染模组
-  modListRef.value = modList;
+  modListRef.value = [];
+  setTimeout(function () {
+    modListRef.value = modList;
+  }, 100);
+
 }
 
 /**

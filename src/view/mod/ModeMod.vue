@@ -217,8 +217,8 @@ async function loadMode() {
 
 <style scoped>
 .ya-mod-mode {
-  height: 21px;
-  width: 21px;
+  height: 1px;
+  width: 1px;
   display: flex;
   align-items: center;
   flex-direction: column;
