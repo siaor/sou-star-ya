@@ -1,8 +1,8 @@
 <template>
   <div class="ya-desktop">
-    <component v-for="(mod, index) in modListRef" :key="index" :is="mod.def" :id="mod.id" v-bind="mod" @sysEv="sysEv"/>
+    <component v-for="(mod, index) in modListRef" :key="index" :is="mod.def" v-bind="mod" @sysEv="sysEv"/>
+    <FastMenu @sysEv="sysEv"></FastMenu>
   </div>
-
   <SysBg v-bind="actMode"></SysBg>
 </template>
 
@@ -19,6 +19,7 @@ import {AllMod} from "@/dom/def/ModSky";
 import {addMoveEv} from "@/res/util/DragUtil";
 import {ActResult} from "@/dom/def/base/ActResult";
 import {Mode} from "@/dom/def/Mode";
+import FastMenu from "@/view/sys/FastMenu.vue";
 
 //模组列表
 const modListRef = shallowRef<Mod[]>([]);
@@ -92,6 +93,7 @@ function sysEv(e: SysEvent) {
       break;
   }
 }
+
 
 //页面加载完成后
 onMounted(() => {
