@@ -97,7 +97,7 @@ function sysEv(e: SysEvent) {
 
 //页面加载完成后
 onMounted(() => {
-  loadMode(localStorage.getItem(Sys.SYS_MODE) ?? '/mode/ya.json');
+  loadMode(localStorage.getItem(Sys.SYS_MODE) ?? './mode/ya.json');
 });
 </script>
 

@@ -15,7 +15,8 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "types": [
-      "node"
+      "node",
+      "vite/client"
     ],
     "paths": {
       "@/*": ["src/*"]

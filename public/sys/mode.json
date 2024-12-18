@@ -1,20 +1,20 @@
 [
   {
     "name": "Ya",
-    "logo": "/img/mode/ya.svg",
-    "url": "/mode/ya.json",
+    "logo": "./img/mode/ya.svg",
+    "url": "./mode/ya.json",
     "bg": ""
   },
   {
     "name": "游戏",
-    "logo": "/img/mode/game.svg",
-    "url": "/mode/game.json",
+    "logo": "./img/mode/game.svg",
+    "url": "./mode/game.json",
     "bg": "https://www.changchenghao.cn/game/uploads/allimg/210630/15134553O-4.jpg"
   },
   {
     "name": "学习",
-    "logo": "/img/mode/study.svg",
-    "url": "/mode/study.json",
+    "logo": "./img/mode/study.svg",
+    "url": "./mode/study.json",
     "bg": "https://pic.rmb.bdstatic.com/bjh/gallery/92b56af984d1a65a9fd0cf5cba8f7780.jpeg@s_0,w_2000"
   }
 ]

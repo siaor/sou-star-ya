@@ -3,15 +3,18 @@
        @click="doCloseMenu($event)">
     <div class="ya-fast-menu-content" v-show="isShowRef" :style="{top:menuYRef+'px',left:menuXRef+'px'}"
          @click="doNothing($event)">
+
       <div class="ya-fast-menu-title">
         <div class="ya-fast-menu-title-left"></div>
         <span>快捷菜单</span>
         <div class="ya-fast-menu-title-right" @click="doFullScreen">
-          <img :src="isFullScreenRef ? '/img/icon/fullscreen-exit.svg': '/img/icon/fullscreen.svg'" alt="ya"
-               :title="isFullScreenRef ? '退出全屏':'全屏显示'"/>
+          <img v-if="isFullScreenRef" src="/img/icon/fullscreen-exit.svg" alt="ya" title="退出全屏"/>
+          <img v-else src="/img/icon/fullscreen.svg" alt="ya" title="全屏显示"/>
         </div>
       </div>
+
       <div class="ya-fast-menu-list">
+
         <div class="ya-fast-menu-item" @click="doRefresh">
           <div class="ya-fast-menu-item-left">
             <img src="/img/icon/refresh.svg" alt="ya"/>
@@ -36,21 +39,24 @@
           <div class="ya-fast-menu-item-right"></div>
         </div>
 
-        <div class="ya-fast-menu-item ya-fast-menu-item-create" @click="doRefresh">
+        <div class="ya-fast-menu-item ya-fast-menu-item-create">
           <div class="ya-fast-menu-item-left">
             <img src="/img/icon/add.svg" alt="ya"/>
           </div>
           <span>新建</span>
           <div class="ya-fast-menu-item-right">
             <img src="/img/icon/right.svg" alt="ya"/>
-            <div class="ya-fast-sub-menu ya-fast-sub-menu-create">
-              <div class="ya-fast-sub-menu-content">
-                <div class="ya-fast-sub-menu-item">应用</div>
-                <div class="ya-fast-sub-menu-item">应用分组</div>
+            <div class="ya-fast-sub-menu">
+              <div class="ya-fast-sub-menu-content ya-fast-sub-menu-create">
+                <div class="ya-fast-sub-menu-list">
+                  <div class="ya-fast-sub-menu-item" @click="doCreateApp">应用</div>
+                  <div class="ya-fast-sub-menu-item">应用分组</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -124,6 +130,7 @@ function doRefresh() {
 
 //全屏
 const isFullScreenRef = ref(false);
+
 function doFullScreen() {
   const isFullScreen = isFullScreenRef.value;
   if (isFullScreen) {
@@ -197,17 +204,9 @@ function doReset() {
   doRefresh();
 }
 
-//新建
-const isShowCreateMenuRef = ref(false);
-function doShowCreateMenu() {
-  isShowCreateMenuRef.value = true;
-}
-function doHideCreateMenu() {
-  isShowCreateMenuRef.value = false;
-}
-
-function doCreate() {
-
+//新建应用
+function doCreateApp() {
+  alert('功能正在开发中...')
 }
 
 //页面加载完成后
@@ -232,10 +231,6 @@ onMounted(() => {
   border-radius: 14px;
   background-color: rgb(0, 0, 0, 0.6);
   cursor: pointer;
-  /*display: flex;
-  flex-direction: column;*/
-  /*justify-content: center;*/
-  /*align-items: center;*/
   text-align: center;
   z-index: 999;
 }
@@ -283,11 +278,6 @@ onMounted(() => {
   height: 290px;
   overflow-y: auto;
   overflow-x: hidden;
-  /*display: flex;*/
-  /*justify-content: flex-start;
-  justify-items: flex-start;*/
-  /*flex-direction: column;*/
-  /*align-items: center;*/
 }
 
 .ya-fast-menu-item {
@@ -333,32 +323,38 @@ onMounted(() => {
 
 .ya-fast-sub-menu {
   position: relative;
-  display: none;
 }
-.ya-fast-sub-menu-content{
+
+.ya-fast-sub-menu-content {
   position: fixed;
   width: 140px;
   height: 200px;
   margin: -25px 0 0 16px;
-  border-radius: 0 14px 14px 14px;
+  z-index: 998;
+  display: none;
+}
+
+.ya-fast-sub-menu-list {
+  width: 133px;
+  height: 100%;
+  border-radius: 0 14px 14px 7px;
+  margin-left: 7px;
   background-color: rgb(0, 0, 0, 0.4);
-  /*border: 1px solid red;*/
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 998;
 }
 
-.ya-fast-menu-item-create:hover .ya-fast-sub-menu-create{
+.ya-fast-menu-item-create:hover .ya-fast-sub-menu-create {
   display: block;
 }
 
-.ya-fast-sub-menu-item{
+.ya-fast-sub-menu-item {
   width: 89%;
   height: 35px;
   white-space: nowrap;
   background-color: rgb(255, 255, 255, 0.1);
-  border-radius: 0 7px 0 0;
+  border-radius: 2px 7px 2px 7px;
   margin-top: 7px;
   display: flex;
   justify-content: center;
@@ -366,7 +362,7 @@ onMounted(() => {
   color: white;
 }
 
-.ya-fast-sub-menu-item:hover{
+.ya-fast-sub-menu-item:hover {
   display: block;
   background-color: rgb(255, 255, 255, 0.3);
 }

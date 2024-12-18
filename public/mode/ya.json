@@ -7,7 +7,7 @@
     "mod": "ModeMod",
     "conf": {
       "name": "模式",
-      "logo": "/img/mode/mode.svg",
+      "logo": "./img/mode/mode.svg",
       "isDrag": false
     }
   },
@@ -17,7 +17,7 @@
       "x": 128,
       "y": 28,
       "name": "AI工具",
-      "logo": "/img/ai_logo.svg",
+      "logo": "./img/ai_logo.svg",
       "list": [
         {
           "mod": "AppMod",
@@ -88,7 +88,7 @@
       "x": 28,
       "y": 28,
       "name": "我的收藏",
-      "logo": "/img/app_group.svg",
+      "logo": "./img/app_group.svg",
       "list":[
         {
           "mod": "AppMod",
