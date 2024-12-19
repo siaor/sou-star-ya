@@ -9,10 +9,7 @@ import {Mod} from "@/dom/def/Mod";
  * @date 2024-12-06 12:00:00
  * */
 export class GroupModConf extends ModConf {
-    x:number = 0;
-    y:number = 0;
-    isDrag:boolean = true;
-    name:string= '';
-    logo:string= '';
+    name:string= '分组';
+    logo:string= './img/app_group.svg';
     list: Mod[] = [];
 }

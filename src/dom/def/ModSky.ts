@@ -34,7 +34,7 @@ export const SysMod = {
         "mod": "ModeMod",
         "conf": {
             "name": "模式",
-            "logo": "/img/mode/mode.svg",
+            "logo": "./img/mode/mode.svg",
             "isDrag": false
         }
     }

@@ -85,18 +85,28 @@ export class ModCtr extends BaseCtr {
 
     static add(url: string, mod: Mod): Promise<ActResult> {
         return new Promise(async (resolve) => {
-            const confAR: ActResult = await super.db.get(Sys.SYS_MODE);
-            if (!confAR.success) {
-                resolve(confAR);
+            //模式名称
+            const modeName: string = super.buildModeName(url);
+            const modeKey = super.buildModeKey(modeName);
+
+            //模组列表
+            const modListAR: ActResult = await super.db.get(modeKey);
+            if(!modListAR.success){
+                resolve(modListAR)
                 return;
             }
-            const modIdPre = super.buildModeName(url);
-            const list = confAR.data as Mod[];
-            const modIndex = list.length + 1;
-            mod.id = modIdPre + modIndex;
-            super.db.put(mod.id, mod);
-            list.push(mod);
-            resolve(super.db.put(Sys.SYS_MODE, list));
+
+            const modList:string[] = modListAR.data;
+
+            const modId = `${modeName}-${modList.length +1}`;
+            modList.push(modId);
+
+            mod.id = modId;
+
+            //将模组信息添加到数据库
+            await super.db.put(modeKey, modList);
+            await super.db.put(modId, JSON.parse(JSON.stringify(mod)));
+            resolve(ActResult.ok());
         });
     }
 

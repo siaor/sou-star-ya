@@ -164,7 +164,7 @@ async function doExport(url: string) {
     return;
   }
 
-  let content = JSON.stringify(modeAR.data);
+  let content = JSON.stringify(modeAR.data, null, 2);
 
   DownloadUtil.exportFile(modeName + '.json', content);
 }
@@ -314,7 +314,6 @@ async function loadMode() {
 
 .ya-mod-mode-setting {
   position: fixed;
-  margin-right: 77px;
   width: 100%;
   height: 100%;
   background-color: rgb(0, 0, 0, 0.7);

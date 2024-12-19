@@ -8,8 +8,6 @@ import {ModConf} from "@/dom/def/ModConf";
  * @date 2024-12-11 08:22:51
  * */
 export class ModeModConf extends ModConf {
-    x: number = 0;
-    y: number = 0;
     isDrag: boolean = false;
     name: string = '主题';
     logo: string = '/img/mode.svg';

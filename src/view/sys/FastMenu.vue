@@ -49,8 +49,8 @@
             <div class="ya-fast-sub-menu">
               <div class="ya-fast-sub-menu-content ya-fast-sub-menu-create">
                 <div class="ya-fast-sub-menu-list">
-                  <div class="ya-fast-sub-menu-item" @click="doCreateApp">应用</div>
-                  <div class="ya-fast-sub-menu-item">应用分组</div>
+                  <div class="ya-fast-sub-menu-item" @click="doCreateApp('AppMod')">应用</div>
+                  <div class="ya-fast-sub-menu-item" @click="doCreateApp('GroupMod')">应用分组</div>
                 </div>
               </div>
             </div>
@@ -60,6 +60,7 @@
       </div>
     </div>
   </div>
+  <CreateMod ref="createModRef"></CreateMod>
 </template>
 
 <script setup lang="ts">
@@ -70,6 +71,7 @@ import {Mod} from "@/dom/def/Mod";
 import {Sys} from "@/dom/def/base/Sys";
 import {ActResult} from "@/dom/def/base/ActResult";
 import {ModeCtr} from "@/ctr/ModeCtr";
+import CreateMod from "@/view/sys/CreateMod.vue";
 
 //系统事件
 const emit = defineEmits(['sysEv']);
@@ -205,9 +207,13 @@ function doReset() {
 }
 
 //新建应用
-function doCreateApp() {
-  alert('功能正在开发中...')
+const createModRef = ref<InstanceType<typeof CreateMod>>();
+
+function doCreateApp(mod: string) {
+  isShowRef.value = false;
+  createModRef.value?.openPop(mod, menuXRef.value, menuYRef.value);
 }
+
 
 //页面加载完成后
 onMounted(() => {
@@ -220,7 +226,7 @@ onMounted(() => {
   position: fixed;
   width: 100%;
   height: 100%;
-  background-color: rgb(0, 0, 0, 0.3);
+  /*background-color: rgb(0, 0, 0, 0.3);*/
   z-index: -1;
 }
 
@@ -363,7 +369,8 @@ onMounted(() => {
 }
 
 .ya-fast-sub-menu-item:hover {
-  display: block;
+  display: flex;
   background-color: rgb(255, 255, 255, 0.3);
 }
+
 </style>
