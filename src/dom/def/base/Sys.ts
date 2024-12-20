@@ -15,5 +15,7 @@ export enum Sys {
     SYS_EVENT_RELOAD_MODE = 'sys-event-reload-mode',
     SYS_EVENT_RELOAD_BG = 'sys-event-reload-bg',
     SYS_EVENT_CACHE_MOD = 'sys-event-cache-mod',
-    SYS_EVENT_ADD_DRAG = 'sys-event-ADD-DRAG',
+    SYS_EVENT_ADD_DRAG = 'sys-event-add-drag',
+    SYS_EVENT_OPEN_MOD_MENU = 'sys-event-open-mod-menu',
+    SYS_EVENT_CLOSE_MOD_MENU = 'sys-event-close-mod-menu',
 }

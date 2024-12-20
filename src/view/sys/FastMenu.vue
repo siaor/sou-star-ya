@@ -1,6 +1,6 @@
 <template>
   <div class="ya-fast-menu" @contextmenu.prevent="doShowMenu($event)" @touchstart="doShowMenuForMobile($event)"
-       @click="doCloseMenu($event)">
+       @click="closeAllPop">
     <div class="ya-fast-menu-content" v-show="isShowRef" :style="{top:menuYRef+'px',left:menuXRef+'px'}"
          @click="doNothing($event)">
 
@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {defineExpose, onMounted, ref} from "vue";
 import {SysCtr} from "@/ctr/SysCtr";
 import {ModCtr} from "@/ctr/ModCtr";
 import {Mod} from "@/dom/def/Mod";
@@ -72,6 +72,12 @@ import {Sys} from "@/dom/def/base/Sys";
 import {ActResult} from "@/dom/def/base/ActResult";
 import {ModeCtr} from "@/ctr/ModeCtr";
 import CreateMod from "@/view/sys/CreateMod.vue";
+import {SysEvent} from "@/dom/def/base/SysEvent";
+
+defineExpose({
+  closePop,
+  closeAllPop
+});
 
 //系统事件
 const emit = defineEmits(['sysEv']);
@@ -116,13 +122,16 @@ function doShowMenu(event: MouseEvent | TouchEvent) {
   }
 
   isShowRef.value = true;
+  emit('sysEv', new SysEvent(Sys.SYS_EVENT_CLOSE_MOD_MENU, {}));
 }
 
 //关闭快捷菜单
-function doCloseMenu(event: MouseEvent) {
-  event.preventDefault();
-  event.stopPropagation();
+function closePop() {
   isShowRef.value = false;
+}
+function closeAllPop() {
+  isShowRef.value = false;
+  emit('sysEv', new SysEvent(Sys.SYS_EVENT_CLOSE_MOD_MENU, {}));
 }
 
 //刷新
@@ -206,7 +215,7 @@ function doReset() {
   doRefresh();
 }
 
-//新建应用
+//新建模组
 const createModRef = ref<InstanceType<typeof CreateMod>>();
 
 function doCreateApp(mod: string) {

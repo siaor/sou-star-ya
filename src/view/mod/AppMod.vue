@@ -1,6 +1,6 @@
 <template>
   <div class="ya-mod ya-mod-app" :id="id" :style="{top:conf.y+'px',left:conf.x+'px'}" title="双击打开">
-    <div class="ya-mod-app-logo" @mousedown="openApp">
+    <div class="ya-mod-app-logo" :id="id+'-mod'" @mousedown="openApp" @contextmenu.prevent="openModMenu($event)">
       <img :src="conf.logo" alt="logo">
     </div>
     <div class="ya-mod-app-name">
@@ -41,6 +41,21 @@ const openApp = (event: MouseEvent) => {
   }, 300);
 
 };
+
+function openModMenu(event: MouseEvent | TouchEvent) {
+  event.preventDefault();
+  event.stopPropagation();
+  let x, y;
+  if (event instanceof MouseEvent) {
+    x = event.clientX;
+    y = event.clientY;
+  } else {
+    const touch = event.changedTouches[0];
+    x = touch.pageX;
+    y = touch.pageY;
+  }
+  emit('sysEv', new SysEvent(Sys.SYS_EVENT_OPEN_MOD_MENU, {id: props.id, x: x, y: y}));
+}
 
 /*>>>>>>> 【组件通用处理】 <<<<<<<*/
 //页面加载完成后

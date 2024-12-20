@@ -6,7 +6,7 @@
  * @date 2024-12-06 12:00:00
  * */
 export class ModConf {
-    x:number = 0;
-    y:number = 0;
-    isDrag:boolean = true;
+    x: number = 0;
+    y: number = 0;
+    isDrag: boolean = true;
 }

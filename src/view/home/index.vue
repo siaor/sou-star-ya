@@ -1,14 +1,15 @@
 <template>
   <div class="ya-desktop">
     <component v-for="(mod, index) in modListRef" :key="index" :is="mod.def" v-bind="mod" @sysEv="sysEv"/>
-    <FastMenu @sysEv="sysEv"></FastMenu>
+    <FastMenu ref="fastMenuRef" @sysEv="sysEv"></FastMenu>
+    <ModMenu ref="modMenuRef" @sysEv="sysEv"></ModMenu>
   </div>
   <SysBg v-bind="actMode"></SysBg>
 </template>
 
 <script setup lang="ts">
 import './index.css'
-import {DefineComponent, onMounted, shallowRef} from "vue";
+import {DefineComponent, onMounted, ref, shallowRef} from "vue";
 import SysBg from '@/view/bg/SysBg.vue'
 import {Mod} from "@/dom/def/Mod";
 import {ModCtr} from "@/ctr/ModCtr";
@@ -20,11 +21,15 @@ import {addMoveEv} from "@/res/util/DragUtil";
 import {ActResult} from "@/dom/def/base/ActResult";
 import {Mode} from "@/dom/def/Mode";
 import FastMenu from "@/view/sys/FastMenu.vue";
+import ModMenu from "@/view/sys/ModMenu.vue";
 
 //模组列表
 const modListRef = shallowRef<Mod[]>([]);
 
 const actMode = shallowRef<Mode>(new Mode());
+
+const fastMenuRef = ref<InstanceType<typeof FastMenu>>();
+const modMenuRef = ref<InstanceType<typeof ModMenu>>();
 
 /**
  * 加载模式
@@ -89,6 +94,13 @@ function sysEv(e: SysEvent) {
     case Sys.SYS_EVENT_ADD_DRAG:
       addMoveEv(e.data.id, e.data.x, e.data.y);
       break
+    case Sys.SYS_EVENT_OPEN_MOD_MENU:
+      fastMenuRef.value?.closePop();
+      modMenuRef.value?.openPop(e.data.id,e.data.x,e.data.y);
+      break;
+    case Sys.SYS_EVENT_CLOSE_MOD_MENU:
+      modMenuRef.value?.closePop();
+      break;
     default:
       break;
   }

@@ -110,6 +110,10 @@ export class ModCtr extends BaseCtr {
         });
     }
 
+    static update(mod: Mod): Promise<ActResult> {
+        return super.db.put(mod.id ?? '', JSON.parse(JSON.stringify(mod)));
+    }
+
     static async updatePosition(modId: string, x: number, y: number) {
         const confAR = await super.db.get(modId);
         if (confAR.success) {
@@ -118,6 +122,10 @@ export class ModCtr extends BaseCtr {
             modConf.conf.y = y;
             await super.db.put(modId, modConf);
         }
+    }
+
+    static delete(modId: string): Promise<ActResult> {
+        return super.db.delete(modId);
     }
 
     static buildModConf(mod: Mod): ModConf {

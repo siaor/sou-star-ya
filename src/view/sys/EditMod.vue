@@ -66,7 +66,7 @@
         <div class="ya-fast-menu-pop-footer-item" @click="closePop">
           取消
         </div>
-        <div class="ya-fast-menu-pop-footer-item" @click="doCreateMod">
+        <div class="ya-fast-menu-pop-footer-item" @click="doSaveMod">
           确定
         </div>
       </div>
@@ -80,7 +80,6 @@ import {ActCode} from "@/dom/def/base/ActCode";
 import {Mod} from "@/dom/def/Mod";
 import {AppModConf} from "@/dom/def/mod/AppModConf";
 import {GroupModConf} from "@/dom/def/mod/GroupModConf";
-import {Sys} from "@/dom/def/base/Sys";
 import {ModCtr} from "@/ctr/ModCtr";
 
 //向父组件提供方法
@@ -107,27 +106,34 @@ function closePop() {
 }
 
 //新建应用
-function openPop(mod: string, x: number, y: number) {
+async function openPop(modId: string) {
+  const modAR = await ModCtr.get(modId);
+  if (!modAR.success) {
+    alert(modAR.msg);
+    return;
+  }
+  modRef.value = modAR.data;
+  console.log(modAR.data)
+  const mod = modRef.value.mod;
+
   switch (mod) {
     case "AppMod":
-      popTitleRef.value = "新建[应用模组]";
-      const appModConf = new AppModConf();
-      appModConf.x = x;
-      appModConf.y = y;
-      modRef.value.conf = appModConf;
+      popTitleRef.value = "编辑[应用模组]";
+      const appModConf: AppModConf = modRef.value.conf;
 
+      xRef.value = appModConf.x;
+      yRef.value = appModConf.y;
       logoRef.value = appModConf.logo;
       urlRef.value = appModConf.url;
       nameRef.value = appModConf.name;
       isDragRef.value = String(appModConf.isDrag);
       break;
     case "GroupMod":
-      popTitleRef.value = "新建[应用分组模组]";
-      const groupModConf = new GroupModConf();
-      groupModConf.x = x;
-      groupModConf.y = y;
-      modRef.value.conf = groupModConf;
+      popTitleRef.value = "编辑[应用分组模组]";
+      const groupModConf: GroupModConf = modRef.value.conf;
 
+      xRef.value = groupModConf.x;
+      yRef.value = groupModConf.y;
       logoRef.value = groupModConf.logo;
       urlRef.value = '';
       nameRef.value = groupModConf.name;
@@ -138,10 +144,7 @@ function openPop(mod: string, x: number, y: number) {
       return;
   }
   isShowPopRef.value = true;
-  modRef.value.mod = mod;
-  xRef.value = x;
-  yRef.value = y;
-  afterChange();
+  modJsonRef.value = JSON.stringify(modRef.value, null, 2);
 }
 
 function afterChange() {
@@ -172,12 +175,8 @@ function afterChange() {
   modJsonRef.value = JSON.stringify(modRef.value, null, 2);
 }
 
-async function doCreateMod() {
-  //从缓存获取当前模组列表
-  const modeUrl = localStorage.getItem(Sys.SYS_MODE);
-  if (!modeUrl) return;
-
-  const addAR = await ModCtr.add(modeUrl, modRef.value);
+async function doSaveMod() {
+  const addAR = await ModCtr.update(modRef.value);
   if (!addAR.success) {
     alert(addAR.msg);
     return;
@@ -340,7 +339,7 @@ async function doCreateMod() {
   border: none;
   border-radius: 7px;
   letter-spacing: 1px;
-  padding-left: 7px;
+  padding: 1px 1px 1px 7px;
   font-size: 16px;
 }
 
