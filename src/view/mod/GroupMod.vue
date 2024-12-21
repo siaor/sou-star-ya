@@ -1,6 +1,6 @@
 <template>
   <div class="ya-mod ya-mod-group" :id="id" :style="{top:conf.y+'px',left:conf.x+'px'}" title="双击打开">
-    <div class="ya-mod-group-logo" @mousedown="doOpen" @touchstart="doOpen">
+    <div class="ya-mod-group-logo" :id="id+'-mod'" @mousedown="doOpen" @contextmenu.prevent="openModMenu($event)">
       <img :src="conf.logo" alt="logo">
     </div>
     <div class="ya-mod-group-name">
@@ -83,6 +83,21 @@ const doOpen = (event: Event) => {
 function doClose() {
   //todo:关闭动画效果
   isShow.value = false;
+}
+
+function openModMenu(event: MouseEvent | TouchEvent) {
+  event.preventDefault();
+  event.stopPropagation();
+  let x, y;
+  if (event instanceof MouseEvent) {
+    x = event.clientX;
+    y = event.clientY;
+  } else {
+    const touch = event.changedTouches[0];
+    x = touch.pageX;
+    y = touch.pageY;
+  }
+  emit('sysEv', new SysEvent(Sys.SYS_EVENT_OPEN_MOD_MENU, {id: props.id, x: x, y: y}));
 }
 
 /*>>>>>>> 【组件通用处理】 <<<<<<<*/

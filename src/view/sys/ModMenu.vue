@@ -48,6 +48,8 @@ import {defineExpose, onMounted, ref} from "vue";
 import {SysCtr} from "@/ctr/SysCtr";
 import {ModCtr} from "@/ctr/ModCtr";
 import EditMod from "@/view/sys/EditMod.vue";
+import {SysEvent} from "@/dom/def/base/SysEvent";
+import {Sys} from "@/dom/def/base/Sys";
 
 defineExpose({
   openPop,
@@ -121,8 +123,8 @@ function doOpen(event: MouseEvent) {
       modDom.dispatchEvent(mousedownEv);
       modDom.dispatchEvent(mouseleaveEv);
     }, 100);
-
   }
+  emit('sysEv', new SysEvent(Sys.SYS_EVENT_CLOSE_MOD_MENU, {}));
 }
 
 //删除模组
