@@ -5,6 +5,8 @@ import {ModeAct} from "@/res/act/ModeAct";
 import {ModeVim} from "@/dom/vim/ModeVim";
 import {ModConfVim} from "@/dom/vim/ModConfVim";
 import {ModConfAct} from "@/res/act/ModConfAct";
+import {Mode} from "@/dom/def/Mode";
+import {SysMod} from "@/dom/def/ModSky";
 
 //模块实例
 const modeInst: ModeVim = new ModeAct();
@@ -21,7 +23,7 @@ export class ModeCtr extends BaseCtr {
     static list(): Promise<ActResult> {
         return new Promise(async (resolve) => {
             //从缓存获取模式列表
-            const cacheListAR = await super.db.get(Sys.SYS_MODE);
+            const cacheListAR = await super.db.get(Sys.SYS_MODE_LIST);
             if (cacheListAR.success) {
                 resolve(cacheListAR);
                 return;
@@ -35,7 +37,7 @@ export class ModeCtr extends BaseCtr {
             }
 
             //缓存
-            await super.db.put(Sys.SYS_MODE, listAR.data);
+            await super.db.put(Sys.SYS_MODE_LIST, listAR.data);
 
             resolve(listAR);
         });
@@ -49,7 +51,7 @@ export class ModeCtr extends BaseCtr {
             //从缓存获取
             const modListAR = await super.db.get(modeKey);
             if (modListAR.success) {
-                const modIdList:string[] = modListAR.data;
+                const modIdList: string[] = modListAR.data;
                 const modList = [];
                 let modAR;
                 for (let modId of modIdList) {
@@ -68,6 +70,24 @@ export class ModeCtr extends BaseCtr {
     }
 
     static clear(): Promise<ActResult> {
-        return super.db.delete(Sys.SYS_MODE);
+        return super.db.delete(Sys.SYS_MODE_LIST);
+    }
+
+    static saveList(list: Mode[]): Promise<ActResult> {
+        return super.db.put(Sys.SYS_MODE_LIST, JSON.parse(JSON.stringify(list)));
+    }
+
+    static createMode(modeName: string, list: Mode[]): Promise<ActResult> {
+        return new Promise(async (resolve) => {
+            //创建默认模组列表
+            const modIdList = [`${modeName}-1`, `${modeName}-2`];
+            await super.db.put(this.buildModeKey(modeName), modIdList);
+            await super.db.put(`${modeName}-1`, SysMod.ModeMod);
+            await super.db.put(`${modeName}-2`, SysMod.SearchMod);
+            //更新列表信息
+            await super.db.put(Sys.SYS_MODE_LIST, JSON.parse(JSON.stringify(list)));
+
+            resolve(ActResult.ok());
+        });
     }
 }

@@ -1,10 +1,11 @@
 <template>
 
-  <div class="ya-mod ya-mod-mode" :id="id" @mouseenter="doOpenMode" @touchstart="doOpenMode" @mouseleave="doCloseMode"
-       @touchleave="doCloseMode"
+  <div class="ya-mod ya-mod-mode" :id="id" @mouseenter="doOpenMiniPop" @touchstart="doOpenMiniPop"
+       @mouseleave="doCloseMiniPop"
+       @touchleave="doCloseMiniPop"
        title="双击打开[模式设置]">
 
-    <img class="ya-mod-mode-logo-mini" :src="logoRef" alt="logo">
+    <img class="ya-mod-mode-logo-mini" :src="actModeRef.logo" alt="logo">
     <div class="ya-mod-mode-logo" @mousedown="openApp">
       <img :src="conf.logo" alt="logo">
     </div>
@@ -12,7 +13,7 @@
       {{ conf.name }}
     </div>
 
-    <div class="ya-mod-mode-box" v-show="isShowMode" title="点击切换模式">
+    <div class="ya-mod-mode-box" v-show="isShowMiniPopRef" title="点击切换模式">
       <div class="ya-mod-mode-list">
         <div class="ya-mod-mode-item" v-for="(item, index) in modeList" :key="index" @click="doSwitch(item,$event)">
           <div class="ya-mod-mode-logo">
@@ -25,19 +26,20 @@
       </div>
     </div>
   </div>
-  <div class="ya-mod-mode-setting" v-show="isShowModeSetting" title="">
+  <div class="ya-mod-mode-setting" v-show="isShowPopRef" title="">
     <div class="ya-mod-mode-setting-content">
       <div class="ya-mod-mode-setting-content-title">
         <div class="ya-mod-mode-setting-menu"></div>
         <span>模式设置</span>
         <div class="ya-mod-mode-setting-menu ya-mod-mode-setting-menu-right">
-          <div class="ya-mod-mode-setting-close"><img src="/img/icon/close.svg" alt="close" @click="doCloseModeSetting">
+          <div class="ya-mod-mode-setting-close"><img src="/img/icon/close.svg" alt="close" @click="doClosePop">
           </div>
         </div>
       </div>
 
       <div class="ya-mod-mode-setting-content-list">
-        <div class="ya-mod-mode-setting-content-item" v-for="(item, index) in modeList" :key="index">
+        <div class="ya-mod-mode-setting-content-item" v-for="(item, index) in modeList" :key="index"
+             @click="doSwitchEdit(item,$event)">
           <div class="ya-mod-mode-setting-content-mode">
             <div class="ya-mod-mode-logo" @mousedown="openApp">
               <img :src="item.logo" alt="logo">
@@ -47,6 +49,7 @@
             </div>
           </div>
           <div class="ya-mod-mode-setting-content-mode-fun">
+            <button @click="doDeleteMode(item.url,$event)">删除</button>
             <button @click="doClearMode(item.url)">重置</button>
             <button @click="doSwitch(item,$event)">应用</button>
             <button @click="doExport(item.url)">导出</button>
@@ -54,7 +57,16 @@
         </div>
       </div>
 
+      <div class="ya-mod-mode-setting-content-edit" v-show="isShowEditRef">
+        名称：<input type="text" v-model="editModeRef.name" placeholder="请填写名称">
+        图标：<input type="text" v-model="editModeRef.logo" placeholder="请填写图标地址">
+        地址：<input type="text" v-model="editModeRef.url" placeholder="请填写模式存放地址">
+        背景：<input type="text" v-model="editModeRef.bg" placeholder="请填写模式背景地址">
+        <button @click="doSaveMode">保存</button>
+      </div>
+
       <div class="ya-mod-mode-setting-content-footer">
+        <button @click="doCreateMode()">新建模式</button>
         <button @click="doClearMode()">全部重置</button>
       </div>
     </div>
@@ -82,10 +94,12 @@ const props = defineProps<{
 const emit = defineEmits(['sysEv']);
 
 /*>>>>>>> 【组件自定义处理】 <<<<<<<*/
-const logoRef = ref(props.conf.logo);
-const nameRef = ref(props.conf.name);
-const isShowMode = ref(false);
-const isShowModeSetting = ref(false);
+/*const logoRef = ref(props.conf.logo);
+const nameRef = ref(props.conf.name);*/
+const isShowMiniPopRef = ref(false);
+const isShowPopRef = ref(false);
+
+const actModeRef = ref<Mode>(new Mode());
 
 const modeList = ref<Mode[]>([]);
 
@@ -98,7 +112,7 @@ const openApp = (event: MouseEvent) => {
   //event.preventDefault();
   if (clickTimeout === 1) {
     //触发双击
-    doOpenModeSetting();
+    doOpenPop();
     return;
   }
 
@@ -109,33 +123,49 @@ const openApp = (event: MouseEvent) => {
 
 };
 
+//切换模式
 function doSwitch(mode: Mode, event: MouseEvent) {
-  //event.stopPropagation();
+  event.stopPropagation();
   //event.preventDefault();
-  logoRef.value = mode.logo
-  nameRef.value = mode.name
+  actModeRef.value = mode;
   emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_MODE, mode));
   emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_BG, mode));
 }
 
-function doOpenMode() {
-  isShowMode.value = true;
+//切换模式的编辑信息
+const isShowEditRef = ref(false);
+const editModeRef = ref<Mode>(new Mode());
+
+function doSwitchEdit(mode: Mode, event: MouseEvent) {
+  isShowEditRef.value = true;
+  editModeRef.value = mode;
 }
 
-function doCloseMode() {
-  isShowMode.value = false;
+//显示迷你弹窗
+function doOpenMiniPop() {
+  isShowMiniPopRef.value = true;
 }
 
-function doOpenModeSetting() {
+//关闭迷你弹窗
+function doCloseMiniPop() {
+  isShowMiniPopRef.value = false;
+  isShowEditRef.value = false;
+}
+
+//打开模式设置弹窗
+function doOpenPop() {
   localStorage.setItem(modeSettingKey, 'true');
-  isShowModeSetting.value = true;
+  isShowPopRef.value = true;
 }
 
-function doCloseModeSetting() {
+//关闭模式设置弹窗
+function doClosePop() {
   localStorage.setItem(modeSettingKey, 'false');
-  isShowModeSetting.value = false;
+  isShowPopRef.value = false;
+  isShowEditRef.value = false;
 }
 
+//重置模式
 async function doClearMode(url?: string) {
   let actUrl;
   if (url) {
@@ -154,6 +184,7 @@ async function doClearMode(url?: string) {
   emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_MODE, {url: actUrl}));
 }
 
+//导出模式
 async function doExport(url: string) {
   const modeName = ModCtr.buildModeName(url);
 
@@ -169,6 +200,71 @@ async function doExport(url: string) {
   DownloadUtil.exportFile(modeName + '.json', content);
 }
 
+//保存模式
+async function doSaveMode() {
+  const actUrl = actModeRef.value.url;
+  for (let mode of modeList.value) {
+    if (mode.url !== actUrl) {
+      continue;
+    }
+    mode.name = actModeRef.value.name;
+    mode.logo = actModeRef.value.name;
+    mode.bg = actModeRef.value.name;
+  }
+
+  //todo:模式名称改变，数据库健的变动，不允许修改？？
+  //更新数据库
+  const modeAR = await ModeCtr.saveList(modeList.value);
+  if (!modeAR.success) {
+    alert(modeAR.msg);
+  }
+}
+
+//新建模式
+async function doCreateMode() {
+  const modeIndex = modeList.value.length + 1;
+  const modeName = `ya-${modeIndex}`;
+
+  const newMode = new Mode();
+  newMode.name = `自定义-${modeIndex}`;
+  newMode.logo = './img/mode/ya.svg';
+  newMode.url = `./mode/${modeName}.json`;
+  newMode.bg = '';
+  modeList.value.push(newMode);
+
+  //添加缓存信息
+  localStorage.setItem(ModeCtr.buildModeKey(modeName), newMode.url);
+  //更新数据库
+  const modeAR = await ModeCtr.createMode(modeName, modeList.value);
+  if (!modeAR.success) {
+    alert(modeAR.msg);
+  }
+}
+
+//删除模式
+async function doDeleteMode(modeUrl: string, event: MouseEvent) {
+  event.stopPropagation();
+  modeList.value = modeList.value.filter(item => item.url !== modeUrl);
+
+  //删除了当前模式，切换到第一个
+  if(actModeRef.value.url === modeUrl) {
+    const actMode = modeList.value[0];
+    if(actMode){
+      actModeRef.value = actMode;
+      emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_MODE, actMode));
+      emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_BG, actMode));
+    }
+  }
+
+  //移除缓存
+  localStorage.removeItem(ModeCtr.buildModeKey(ModeCtr.buildModeName(modeUrl)));
+  //更新数据库
+  const modeAR = await ModeCtr.saveList(modeList.value);
+  if (!modeAR.success) {
+    alert(modeAR.msg);
+  }
+}
+
 /*>>>>>>> 【组件通用处理】 <<<<<<<*/
 //页面加载完成后
 onMounted(() => {
@@ -179,7 +275,7 @@ onMounted(() => {
 async function init() {
   //模式设置窗口
   if (localStorage.getItem(modeSettingKey) === 'true') {
-    isShowModeSetting.value = true;
+    isShowPopRef.value = true;
   }
 
   //调用系统事件：添加模组拖拽事件
@@ -207,8 +303,8 @@ async function loadMode() {
   if (sysModeUrl) {
     const actMode = modeList.value.find(item => item.url === sysModeUrl);
     if (actMode) {
-      logoRef.value = actMode.logo
-      nameRef.value = actMode.name
+      actModeRef.value = actMode;
+      editModeRef.value = actMode;
       emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_BG, actMode));
     }
   }
@@ -387,6 +483,7 @@ async function loadMode() {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
 }
 
 .ya-mod-mode-setting-content-item:hover {
@@ -430,6 +527,33 @@ async function loadMode() {
   cursor: pointer;
 }
 
+.ya-mod-mode-setting-content-edit {
+  width: 100%;
+  height: 56px;
+  /*border: 1px solid rgb(255, 255, 255, 0.1);*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ya-mod-mode-setting-content-edit input {
+  width: 18%;
+  height: 66%;
+  background-color: rgb(0, 0, 0, 0.2);
+  border: none;
+  border-radius: 7px;
+  letter-spacing: 1px;
+  padding: 1px 1px 1px 7px;
+  margin-right: 7px;
+  font-size: 16px;
+}
+
+.ya-mod-mode-setting-content-edit button {
+  width: 77px;
+  height: 66%;
+  cursor: pointer;
+}
+
 .ya-mod-mode-setting-content-footer {
   width: 100%;
   height: 56px;
@@ -443,6 +567,7 @@ async function loadMode() {
 .ya-mod-mode-setting-content-footer button {
   width: 30%;
   height: 42px;
+  margin: 0 7px 0 7px;
   background-color: rgb(255, 255, 255, 0.1);
   border-radius: 14px;
   cursor: pointer;

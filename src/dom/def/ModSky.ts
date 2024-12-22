@@ -37,5 +37,9 @@ export const SysMod = {
             "logo": "./img/mode/mode.svg",
             "isDrag": false
         }
+    },
+    SearchMod: {
+        "mod": "SearchMod",
+        "conf": {"x": 0, "y": 0, "engine": "百度"}
     }
 }
