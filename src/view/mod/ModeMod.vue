@@ -49,10 +49,10 @@
             </div>
           </div>
           <div class="ya-mod-mode-setting-content-mode-fun">
-            <button @click="doDeleteMode(item.url,$event)">删除</button>
-            <button @click="doClearMode(item.url)">重置</button>
+            <button @click="doDeleteMode(item,$event)">删除</button>
+            <button @click="doClearMode(item,$event)">重置</button>
             <button @click="doSwitch(item,$event)">应用</button>
-            <button @click="doExport(item.url)">导出</button>
+            <button @click="doExport(item,$event)">导出</button>
           </div>
         </div>
       </div>
@@ -67,7 +67,7 @@
 
       <div class="ya-mod-mode-setting-content-footer">
         <button @click="doCreateMode()">新建模式</button>
-        <button @click="doClearMode()">全部重置</button>
+        <button @click="doClearAllMode()">全部重置</button>
       </div>
     </div>
   </div>
@@ -78,7 +78,6 @@ import {defineProps, onMounted, ref} from 'vue';
 import {ModeModConf} from "@/dom/def/mod/ModeModConf";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";
-import {ModCtr} from "@/ctr/ModCtr";
 import {DownloadUtil} from "@/res/util/DownloadUtil";
 import {Mode} from "@/dom/def/Mode";
 import {ModeCtr} from "@/ctr/ModeCtr";
@@ -94,8 +93,6 @@ const props = defineProps<{
 const emit = defineEmits(['sysEv']);
 
 /*>>>>>>> 【组件自定义处理】 <<<<<<<*/
-/*const logoRef = ref(props.conf.logo);
-const nameRef = ref(props.conf.name);*/
 const isShowMiniPopRef = ref(false);
 const isShowPopRef = ref(false);
 
@@ -107,9 +104,10 @@ const modeSettingKey = 'mode-setting-show';
 
 /*双击打开*/
 let clickTimeout = 0;
-const openApp = (event: MouseEvent) => {
+
+function openApp(event: MouseEvent) {
   //event.stopPropagation();
-  //event.preventDefault();
+  event.preventDefault();
   if (clickTimeout === 1) {
     //触发双击
     doOpenPop();
@@ -121,7 +119,7 @@ const openApp = (event: MouseEvent) => {
     clickTimeout = 0;
   }, 300);
 
-};
+}
 
 //切换模式
 function doSwitch(mode: Mode, event: MouseEvent) {
@@ -137,6 +135,7 @@ const isShowEditRef = ref(false);
 const editModeRef = ref<Mode>(new Mode());
 
 function doSwitchEdit(mode: Mode, event: MouseEvent) {
+  event.stopPropagation();
   isShowEditRef.value = true;
   editModeRef.value = mode;
 }
@@ -165,31 +164,34 @@ function doClosePop() {
   isShowEditRef.value = false;
 }
 
-//重置模式
-async function doClearMode(url?: string) {
-  let actUrl;
-  if (url) {
-    actUrl = url;
-    const modeName = ModCtr.buildModeName(url);
-    localStorage.removeItem(ModeCtr.buildModeKey(modeName));
-  } else {
-    actUrl = localStorage.getItem(Sys.SYS_MODE);
-    localStorage.clear();
+//重置单个模式
+async function doClearMode(mode: Mode, event: MouseEvent) {
+  event.stopPropagation();
+  if (!mode.isLocal) {
+    localStorage.removeItem(ModeCtr.buildModeKey(mode.id));
   }
+  emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_MODE, mode));
+}
 
+//重置全部模式
+async function doClearAllMode() {
+  localStorage.clear();
   //重刷模式列表
   await ModeCtr.clear();
   await loadMode();
 
-  emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_MODE, {url: actUrl}));
+  let switchMode = actModeRef.value;
+  if (switchMode.isLocal) {
+    switchMode = modeList.value[0];
+  }
+  emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_MODE, switchMode));
 }
 
 //导出模式
-async function doExport(url: string) {
-  const modeName = ModCtr.buildModeName(url);
-
+async function doExport(mode: Mode, event: MouseEvent) {
+  event.stopPropagation();
   //获取模式内容
-  const modeAR = await ModeCtr.exportMode(url);
+  const modeAR = await ModeCtr.exportMode(mode);
   if (!modeAR.success) {
     alert(modeAR.msg);
     return;
@@ -197,22 +199,26 @@ async function doExport(url: string) {
 
   let content = JSON.stringify(modeAR.data, null, 2);
 
-  DownloadUtil.exportFile(modeName + '.json', content);
+  DownloadUtil.exportFile(mode.id + '.json', content);
 }
 
 //保存模式
 async function doSaveMode() {
-  const actUrl = actModeRef.value.url;
+  const actModeId = actModeRef.value.id;
   for (let mode of modeList.value) {
-    if (mode.url !== actUrl) {
+    if (mode.id !== actModeId) {
       continue;
     }
+
     mode.name = actModeRef.value.name;
-    mode.logo = actModeRef.value.name;
-    mode.bg = actModeRef.value.name;
+    mode.logo = actModeRef.value.logo;
+    mode.url = actModeRef.value.url;
+    mode.bg = actModeRef.value.bg;
+
+    //更新缓存信息
+    localStorage.setItem(mode.id, mode.url);
   }
 
-  //todo:模式名称改变，数据库健的变动，不允许修改？？
   //更新数据库
   const modeAR = await ModeCtr.saveList(modeList.value);
   if (!modeAR.success) {
@@ -223,33 +229,35 @@ async function doSaveMode() {
 //新建模式
 async function doCreateMode() {
   const modeIndex = modeList.value.length + 1;
-  const modeName = `ya-${modeIndex}`;
+  const modeId = `local-${modeIndex}`;
 
   const newMode = new Mode();
+  newMode.id = modeId;
+  newMode.isLocal = true;
   newMode.name = `自定义-${modeIndex}`;
   newMode.logo = './img/mode/ya.svg';
-  newMode.url = `./mode/${modeName}.json`;
+  newMode.url = `./mode/${modeId}.json`;
   newMode.bg = '';
   modeList.value.push(newMode);
 
   //添加缓存信息
-  localStorage.setItem(ModeCtr.buildModeKey(modeName), newMode.url);
+  localStorage.setItem(ModeCtr.buildModeKey(modeId), modeId);
   //更新数据库
-  const modeAR = await ModeCtr.createMode(modeName, modeList.value);
+  const modeAR = await ModeCtr.createMode(modeId, modeList.value);
   if (!modeAR.success) {
     alert(modeAR.msg);
   }
 }
 
 //删除模式
-async function doDeleteMode(modeUrl: string, event: MouseEvent) {
+async function doDeleteMode(mode: Mode, event: MouseEvent) {
   event.stopPropagation();
-  modeList.value = modeList.value.filter(item => item.url !== modeUrl);
+  modeList.value = modeList.value.filter(item => item.id !== mode.id);
 
   //删除了当前模式，切换到第一个
-  if(actModeRef.value.url === modeUrl) {
+  if (actModeRef.value.id === mode.id) {
     const actMode = modeList.value[0];
-    if(actMode){
+    if (actMode) {
       actModeRef.value = actMode;
       emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_MODE, actMode));
       emit('sysEv', new SysEvent(Sys.SYS_EVENT_RELOAD_BG, actMode));
@@ -257,7 +265,7 @@ async function doDeleteMode(modeUrl: string, event: MouseEvent) {
   }
 
   //移除缓存
-  localStorage.removeItem(ModeCtr.buildModeKey(ModeCtr.buildModeName(modeUrl)));
+  localStorage.removeItem(ModeCtr.buildModeKey(mode.id));
   //更新数据库
   const modeAR = await ModeCtr.saveList(modeList.value);
   if (!modeAR.success) {
@@ -299,9 +307,9 @@ async function loadMode() {
   }
 
   //从缓存获取当前模式
-  const sysModeUrl = localStorage.getItem(Sys.SYS_MODE);
-  if (sysModeUrl) {
-    const actMode = modeList.value.find(item => item.url === sysModeUrl);
+  const actModeId = localStorage.getItem(Sys.SYS_MODE);
+  if (actModeId) {
+    const actMode = modeList.value.find(item => item.id === actModeId);
     if (actMode) {
       actModeRef.value = actMode;
       editModeRef.value = actMode;

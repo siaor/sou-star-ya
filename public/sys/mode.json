@@ -1,17 +1,20 @@
 [
   {
+    "id": "ya",
     "name": "Ya",
     "logo": "./img/mode/ya.svg",
     "url": "./mode/ya.json",
     "bg": ""
   },
   {
+    "id": "game",
     "name": "游戏",
     "logo": "./img/mode/game.svg",
     "url": "./mode/game.json",
     "bg": "https://www.changchenghao.cn/game/uploads/allimg/210630/15134553O-4.jpg"
   },
   {
+    "id": "study",
     "name": "学习",
     "logo": "./img/mode/study.svg",
     "url": "./mode/study.json",

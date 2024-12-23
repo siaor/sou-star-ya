@@ -6,6 +6,7 @@ import {Sys} from "@/dom/def/base/Sys";
 import {Mod} from "@/dom/def/Mod";
 import {AllMod, SysMod} from "@/dom/def/ModSky";
 import {ModConf} from "@/dom/def/ModConf";
+import {Mode} from "@/dom/def/Mode";
 
 //模块配置实例
 const modConfInst: ModConfVim = new ModConfAct();
@@ -18,22 +19,22 @@ const modConfInst: ModConfVim = new ModConfAct();
  * */
 export class ModCtr extends BaseCtr {
 
-    static list(url: string): Promise<ActResult> {
+    static list(mode: Mode): Promise<ActResult> {
         return new Promise(async (resolve) => {
             //模式名称
-            const modeName: string = super.buildModeName(url);
-            const modeKey = super.buildModeKey(modeName);
+            const modeId: string = mode.id;
+            const modeKey = super.buildModeKey(modeId);
 
             //从缓存获取
             const modeUrl = localStorage.getItem(modeKey);
             if (modeUrl) {
-                localStorage.setItem(Sys.SYS_MODE,url);
+                localStorage.setItem(Sys.SYS_MODE,modeId);
                 resolve(super.db.get(modeKey));
                 return;
             }
 
             //从链接获取模组配置
-            const confAR = await modConfInst.get(url);
+            const confAR = await modConfInst.get(mode.url);
             if (!confAR.success) {
                 resolve(confAR);
                 return;
@@ -52,7 +53,7 @@ export class ModCtr extends BaseCtr {
             let modIndex = 1;
             let modId;
             for (let mod of modList) {
-                modId = modeName+ '-' + modIndex;
+                modId = modeId+ '-' + modIndex;
 
                 mod.id = modId;
                 mod.conf = JSON.parse(JSON.stringify(this.buildModConf(mod)));
@@ -66,8 +67,8 @@ export class ModCtr extends BaseCtr {
             }
 
             //缓存当前配置信息
-            localStorage.setItem(Sys.SYS_MODE, url);
-            localStorage.setItem(modeKey, url);
+            localStorage.setItem(Sys.SYS_MODE, modeId);
+            localStorage.setItem(modeKey, modeId);
             //存到数据库
             await super.db.put(modeKey, modIdList);
 

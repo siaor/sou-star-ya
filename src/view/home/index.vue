@@ -22,6 +22,7 @@ import {ActResult} from "@/dom/def/base/ActResult";
 import {Mode} from "@/dom/def/Mode";
 import FastMenu from "@/view/sys/FastMenu.vue";
 import ModMenu from "@/view/sys/ModMenu.vue";
+import {ModeCtr} from "@/ctr/ModeCtr";
 
 //模组列表
 const modListRef = shallowRef<Mod[]>([]);
@@ -34,12 +35,12 @@ const modMenuRef = ref<InstanceType<typeof ModMenu>>();
 /**
  * 加载模式
  *
- * @description 根据模式文件url加载模式
+ * @description 根据模式文件ID加载模式
  * @author Siaor
  * @date 2024-12-12 03:41:49
  * */
-async function loadMode(url: string) {
-  const listAR = await ModCtr.list(url);
+async function loadMode(mode: Mode) {
+  const listAR = await ModCtr.list(mode);
   if (!listAR.success) {
     alert(ActCode.MOD_CONF_NOT_FOUND.msg);
     return;
@@ -83,7 +84,7 @@ async function loadMode(url: string) {
 function sysEv(e: SysEvent) {
   switch (e.name) {
     case Sys.SYS_EVENT_RELOAD_MODE:
-      loadMode(e.data.url);
+      loadMode(e.data);
       break;
     case Sys.SYS_EVENT_RELOAD_BG:
       actMode.value = e.data;
@@ -96,7 +97,7 @@ function sysEv(e: SysEvent) {
       break
     case Sys.SYS_EVENT_OPEN_MOD_MENU:
       fastMenuRef.value?.closePop();
-      modMenuRef.value?.openPop(e.data.id,e.data.x,e.data.y);
+      modMenuRef.value?.openPop(e.data.id, e.data.x, e.data.y);
       break;
     case Sys.SYS_EVENT_CLOSE_MOD_MENU:
       modMenuRef.value?.closePop();
@@ -109,8 +110,29 @@ function sysEv(e: SysEvent) {
 
 //页面加载完成后
 onMounted(() => {
-  loadMode(localStorage.getItem(Sys.SYS_MODE) ?? './mode/ya.json');
+  init();
 });
+
+async function init() {
+  const modeListAR = await ModeCtr.list();
+  if (!modeListAR.success) {
+    alert(modeListAR.msg);
+    return;
+  }
+  const modeList:Mode[] = modeListAR.data;
+  let actMode;
+
+  //从缓存获取当前模式
+  let modeId = localStorage.getItem(Sys.SYS_MODE);
+  if(modeId){
+    actMode = modeList.find(item => item.id === modeId);
+  }
+  if(!actMode){
+    actMode = modeList[0];
+  }
+
+  loadMode(actMode);
+}
 </script>
 
 <style scoped>

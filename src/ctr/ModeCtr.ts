@@ -43,10 +43,9 @@ export class ModeCtr extends BaseCtr {
         });
     }
 
-    static exportMode(url: string): Promise<ActResult> {
+    static exportMode(mode: Mode): Promise<ActResult> {
         return new Promise(async (resolve) => {
-            const modeName: string = super.buildModeName(url);
-            const modeKey = super.buildModeKey(modeName);
+            const modeKey = super.buildModeKey(mode.id);
 
             //从缓存获取
             const modListAR = await super.db.get(modeKey);
@@ -65,7 +64,7 @@ export class ModeCtr extends BaseCtr {
                 return;
             }
 
-            resolve(await modConfInst.get(url));
+            resolve(await modConfInst.get(mode.url));
         });
     }
 
@@ -77,13 +76,13 @@ export class ModeCtr extends BaseCtr {
         return super.db.put(Sys.SYS_MODE_LIST, JSON.parse(JSON.stringify(list)));
     }
 
-    static createMode(modeName: string, list: Mode[]): Promise<ActResult> {
+    static createMode(modeId: string, list: Mode[]): Promise<ActResult> {
         return new Promise(async (resolve) => {
             //创建默认模组列表
-            const modIdList = [`${modeName}-1`, `${modeName}-2`];
-            await super.db.put(this.buildModeKey(modeName), modIdList);
-            await super.db.put(`${modeName}-1`, SysMod.ModeMod);
-            await super.db.put(`${modeName}-2`, SysMod.SearchMod);
+            const modIdList = [`${modeId}-1`, `${modeId}-2`];
+            await super.db.put(this.buildModeKey(modeId), modIdList);
+            await super.db.put(`${modeId}-1`, SysMod.ModeMod);
+            await super.db.put(`${modeId}-2`, SysMod.SearchMod);
             //更新列表信息
             await super.db.put(Sys.SYS_MODE_LIST, JSON.parse(JSON.stringify(list)));
 
