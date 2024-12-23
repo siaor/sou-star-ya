@@ -58,10 +58,12 @@
       </div>
 
       <div class="ya-mod-mode-setting-content-edit" v-show="isShowEditRef">
-        名称：<input type="text" v-model="editModeRef.name" placeholder="请填写名称">
-        图标：<input type="text" v-model="editModeRef.logo" placeholder="请填写图标地址">
-        地址：<input type="text" v-model="editModeRef.url" placeholder="请填写模式存放地址">
-        背景：<input type="text" v-model="editModeRef.bg" placeholder="请填写模式背景地址">
+        <div class="ya-mod-mode-setting-content-edit-item">
+          <span>名称：</span><input type="text" v-model="editModeRef.name" placeholder="请填写名称">
+          <span>图标：</span><input type="text" v-model="editModeRef.logo" placeholder="请填写图标地址">
+          <span>地址：</span><input type="text" v-model="editModeRef.url" placeholder="请填写模式存放地址">
+          <span>背景：</span><input type="text" v-model="editModeRef.bg" placeholder="请填写模式背景地址">
+        </div>
         <button @click="doSaveMode">保存</button>
       </div>
 
@@ -214,9 +216,6 @@ async function doSaveMode() {
     mode.logo = actModeRef.value.logo;
     mode.url = actModeRef.value.url;
     mode.bg = actModeRef.value.bg;
-
-    //更新缓存信息
-    localStorage.setItem(mode.id, mode.url);
   }
 
   //更新数据库
@@ -481,6 +480,8 @@ async function loadMode() {
 .ya-mod-mode-setting-content-list {
   width: 99%;
   flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .ya-mod-mode-setting-content-item {
@@ -538,14 +539,22 @@ async function loadMode() {
 .ya-mod-mode-setting-content-edit {
   width: 100%;
   height: 56px;
-  /*border: 1px solid rgb(255, 255, 255, 0.1);*/
+  white-space: nowrap;
   display: flex;
   align-items: center;
-  justify-content: center;
+  color: white;
 }
-
-.ya-mod-mode-setting-content-edit input {
-  width: 18%;
+.ya-mod-mode-setting-content-edit-item{
+  flex: 1;
+  height: 100%;
+  margin: 0 7px 0 7px;
+  overflow-y: hidden;
+  overflow-x: auto;
+  display: flex;
+  align-items: center;
+}
+.ya-mod-mode-setting-content-edit-item input {
+  width: 280px;
   height: 66%;
   background-color: rgb(0, 0, 0, 0.2);
   border: none;
@@ -554,12 +563,22 @@ async function loadMode() {
   padding: 1px 1px 1px 7px;
   margin-right: 7px;
   font-size: 16px;
+  color: white;
 }
 
 .ya-mod-mode-setting-content-edit button {
   width: 77px;
   height: 66%;
+  margin: 0 7px 0 7px;
   cursor: pointer;
+  right: 0;
+  background-color: rgb(255, 255, 255, 0.1);
+  border-radius: 7px;
+  color: white;
+  text-shadow: -1px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 1px 0 #000,
+  1px 1px 0 #000;
 }
 
 .ya-mod-mode-setting-content-footer {
