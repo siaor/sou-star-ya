@@ -471,6 +471,8 @@ async function loadMode() {
   1px -1px 0 #000,
   -1px 1px 0 #000,
   1px 1px 0 #000;
+  background-color: rgb(255, 255, 255, 0.1);
+  border-radius: 14px 14px 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -487,6 +489,7 @@ async function loadMode() {
 .ya-mod-mode-setting-content-item {
   width: 100%;
   height: 81px;
+  margin: 7px 0 7px 0;
   border: 1px solid rgb(255, 255, 255, 0.1);
   border-radius: 14px;
   display: flex;

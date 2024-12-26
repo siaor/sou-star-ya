@@ -174,10 +174,10 @@ function afterChange() {
 
 async function doCreateMod() {
   //从缓存获取当前模组列表
-  const modeUrl = localStorage.getItem(Sys.SYS_MODE);
-  if (!modeUrl) return;
+  const modeId = localStorage.getItem(Sys.SYS_MODE);
+  if (!modeId) return;
 
-  const addAR = await ModCtr.add(modeUrl, modRef.value);
+  const addAR = await ModCtr.add(modeId, modRef.value);
   if (!addAR.success) {
     alert(addAR.msg);
     return;

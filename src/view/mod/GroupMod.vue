@@ -8,10 +8,22 @@
     </div>
   </div>
   <transition name="shrink">
-    <div class="ya-mod-group-content" v-show="isShow">
-      <component v-for="(mod, index) in modListRef" :key="index" :id="mod.id" :is="mod.def" v-bind="mod"/>
-      <div class="ya-mod-group-close">
-        <img src="/img/app_close.svg" alt="close" @click="doClose" @touchstart="doClose"/>
+    <div class="ya-mod-group-pop" v-show="isShow">
+      <div class="ya-mod-group-pop-content">
+        <div class="ya-mod-group-pop-header">
+          <div class="ya-mod-group-pop-header-menu-left"></div>
+          <span>{{ conf.name }}</span>
+          <div class="ya-mod-group-pop-header-menu-right">
+            <img src="/img/icon/close.svg" alt="close" @click="doClose">
+          </div>
+        </div>
+
+        <div class="ya-mod-group-pop-list" @click="closeModMenu">
+          <div class="ya-mod-group-add" title="添加子模组" @click="doAddMod($event)">
+            <img src="/img/icon/add.svg" alt="logo">
+          </div>
+          <component v-for="(mod, index) in modListRef" :key="index" :is="mod.def" v-bind="mod" @sysEv="sysEv"/>
+        </div>
       </div>
     </div>
   </transition>
@@ -24,6 +36,10 @@ import {Mod} from "@/dom/def/Mod";
 import {AllMod} from "@/dom/def/ModSky";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";
+import {isMobileDevice} from "@/ctr/SysCtr";
+import {ModCtr} from "@/ctr/ModCtr";
+import {ActResult} from "@/dom/def/base/ActResult";
+import {AppModConf} from "@/dom/def/mod/AppModConf";
 
 //从父组件接收的 props
 const props = defineProps<{
@@ -36,6 +52,8 @@ const props = defineProps<{
 const emit = defineEmits(['sysEv']);
 
 /*>>>>>>> 【组件自定义处理】 <<<<<<<*/
+const groupPopKey = 'group-pop-show';
+
 const isShow = ref(false);
 //组件列表
 const modListRef = shallowRef<Mod[]>([]);
@@ -47,28 +65,11 @@ const doOpen = (event: Event) => {
   event.preventDefault();
   //触发双击
   if (clickTimeout === 1) {
-    //清空列表
-    modList = [];
-
-    let parent = props.id + '-';
-    let modId = 1;
-
-    const maxCount = Math.floor(window.innerWidth / 100) + 1;
-    for (let mod of props.conf.list) {
-      mod.id = parent + modId;
-      mod.conf.x = ((modId % maxCount - 1) * 100) + 28;
-      mod.conf.y = (Math.floor(modId / maxCount) * 100) + 28;
-
-      const modDef = AllMod.def[mod.mod as keyof typeof AllMod.def] as DefineComponent<{}, {}, any>;
-      if (!modDef) return;
-
-      mod.def = modDef;
-      modList.push(mod);
-
-      modId++;
-    }
-    modListRef.value = modList;
+    event.stopPropagation();
+    loadList();
+    //SysCtr.fullScreen();
     isShow.value = true;
+    localStorage.setItem(groupPopKey, props.id);
     return;
   }
 
@@ -79,10 +80,53 @@ const doOpen = (event: Event) => {
 
 };
 
+async function loadList() {
+  //清空列表
+  modList = [];
+
+  //从数据库获取列表
+  const groupId = props.id;
+  const groupKey = `${groupId}-group`;
+  const groupAR = await ModCtr.getGroupModIdList(groupKey);
+  if (!groupAR.success) {
+    alert(groupAR.msg);
+    return;
+  }
+  const modIdList: string[] = groupAR.data;
+
+  let gap = isMobileDevice ? 0 : 23;
+  let gapRate = isMobileDevice ? 0.97 : 0.77;
+
+  const maxCount = Math.floor((window.innerWidth * gapRate - gap) / 100);
+  let modAR: ActResult;
+  let mod: Mod;
+  let modIndex = 1;
+  for (let modId of modIdList) {
+
+    //从缓存获取模组信息
+    modAR = await ModCtr.get(modId);
+    if (!modAR.success) continue;
+
+    mod = modAR.data;
+
+    mod.conf.x = ((modIndex % maxCount) * 100) + gap;
+    mod.conf.y = (Math.floor(modIndex / maxCount) * 100) + 28;
+
+    const modDef = AllMod.def[mod.mod as keyof typeof AllMod.def] as DefineComponent<{}, {}, any>;
+    if (!modDef) return;
+
+    mod.def = modDef;
+    modList.push(mod);
+
+    modIndex++;
+  }
+  modListRef.value = modList;
+}
 
 function doClose() {
   //todo:关闭动画效果
   isShow.value = false;
+  localStorage.removeItem(groupPopKey);
 }
 
 function openModMenu(event: MouseEvent | TouchEvent) {
@@ -98,6 +142,61 @@ function openModMenu(event: MouseEvent | TouchEvent) {
     y = touch.pageY;
   }
   emit('sysEv', new SysEvent(Sys.SYS_EVENT_OPEN_MOD_MENU, {id: props.id, x: x, y: y}));
+}
+
+async function doAddMod(event: MouseEvent) {
+  event.stopPropagation();
+
+
+  //从数据库获取列表
+  const groupId = props.id;
+  const groupKey = `${groupId}-group`;
+  const groupAR = await ModCtr.getGroupModIdList(groupKey);
+  if (!groupAR.success) {
+    alert(groupAR.msg);
+    return;
+  }
+  const modIdList: string[] = groupAR.data;
+
+  //获取分组模组信息
+  const groupModAR = await ModCtr.get(groupId);
+  if (!groupModAR.success) {
+    alert(groupModAR.msg);
+    return;
+  }
+  const groupMod: Mod = groupModAR.data;
+  const groupModList: Mod[] = groupMod.conf.list;
+
+  const modId = `${props.id}-${modIdList.length + 1}`;
+  modIdList.push(modId);
+
+  //新建模组
+  const mod = new Mod();
+  mod.id = modId;
+  mod.mod = "AppMod";
+
+  const conf = new AppModConf();
+  conf.isDrag = false;
+  mod.conf = conf;
+
+  //更新列表
+  ModCtr.groupAddModList(groupKey, modIdList);
+  //插入模组
+  ModCtr.cache(mod);
+  //更新分组模组的模组列表
+  groupModList.push(mod);
+  ModCtr.cache(groupMod);
+
+  window.location.reload();
+}
+
+function closeModMenu() {
+  emit('sysEv', new SysEvent(Sys.SYS_EVENT_CLOSE_MOD_MENU, {}));
+}
+
+
+function sysEv(e: SysEvent) {
+  emit('sysEv', e);
 }
 
 /*>>>>>>> 【组件通用处理】 <<<<<<<*/
@@ -116,6 +215,34 @@ async function init() {
       y: props.conf.y
     });
     emit('sysEv', sysEvAddDrag);
+  }
+
+  //缓存分组中的模组
+  const groupId = props.id;
+  const groupKey = `${groupId}-group`;
+  const groupIdCache = localStorage.getItem(groupKey);
+  if (!groupIdCache) {
+    const groupList = [];
+
+    let groupIndex = 1;
+    for (let mod of props.conf.list) {
+      mod.id = `${groupId}-${groupIndex}`;
+      //缓存
+      ModCtr.cache(mod);
+      groupList.push(mod.id);
+      groupIndex++;
+    }
+    localStorage.setItem(groupKey, groupId);
+    //缓存列表
+    ModCtr.groupAddModList(groupKey, groupList);
+  }
+
+  //上次窗口状态
+  const groupPopId = localStorage.getItem(groupPopKey);
+  if (groupPopId && groupPopId === groupId) {
+    loadList();
+    isShow.value = true;
+    localStorage.setItem(groupPopKey, props.id);
   }
 }
 </script>
@@ -162,7 +289,7 @@ async function init() {
   overflow-wrap: break-word;
 }
 
-.ya-mod-group-content {
+.ya-mod-group-pop {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -170,35 +297,107 @@ async function init() {
   top: 0;
   background-color: rgb(0, 0, 0, 0.9);
   z-index: 99;
-  /*transition: height 0.5s ease, opacity 0.5s ease;*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
 }
 
-.ya-mod-group-close {
-  width: 100%;
-  height: 70px;
+.ya-mod-group-pop-content {
+  width: 77%;
+  height: 77%;
+  background-color: rgb(255, 255, 255, 0.1);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  position: fixed;
-  bottom: 0;
-  /*background-color: rgb(255, 255, 255, 0.1);*/
+.ya-mod-group-pop-header {
+  width: 100%;
+  height: 42px;
+  border-radius: 14px 14px 0 0;
+  font-size: 21px;
+  color: white;
+  text-shadow: -1px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 1px 0 #000,
+  1px 1px 0 #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  background-color: rgb(255, 255, 255, 0.1);
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.5);
+  letter-spacing: 3px;
+}
+
+.ya-mod-group-pop-header:hover {
+  background-color: rgb(255, 255, 255, 0.2);
+}
+
+.ya-mod-group-pop-header-menu-left {
+  width: 42px;
+  height: 35px;
+}
+
+.ya-mod-group-pop-header-menu-right {
+  width: 42px;
+  height: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.ya-mod-group-close img {
-  height: 70%;
+.ya-mod-group-pop-header-menu-right img {
+  width: 77%;
+  height: 77%;
+  cursor: pointer;
 }
 
-.ya-mod-group-close img:hover {
-  cursor: pointer;
+
+.ya-mod-group-pop-list {
+  width: 100%;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+}
+
+.ya-mod-group-add {
+  width: 55px;
+  height: 55px;
+  left: 35px;
+  top: 35px;
+  border-radius: 14px;
+  position: absolute;
   background-color: rgb(255, 255, 255, 0.1);
-  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ya-mod-group-add:hover {
+  background-color: rgb(255, 255, 255, 0.2);
+}
+
+.ya-mod-group-add img {
+  width: 66%;
+  height: 66%;
 }
 
 /* >>>>>>>【响应式样式】<<<<<<< */
 /* 小屏幕：手机 */
 @media (max-width: 768px) {
+  .ya-mod-group-pop-content {
+    width: 94%;
+    height: 90%;
+  }
 
+  .ya-mod-group-add {
+    left: 12px;
+  }
 }
 
 

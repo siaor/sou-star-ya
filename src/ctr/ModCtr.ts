@@ -28,7 +28,7 @@ export class ModCtr extends BaseCtr {
             //从缓存获取
             const modeUrl = localStorage.getItem(modeKey);
             if (modeUrl) {
-                localStorage.setItem(Sys.SYS_MODE,modeId);
+                localStorage.setItem(Sys.SYS_MODE, modeId);
                 resolve(super.db.get(modeKey));
                 return;
             }
@@ -42,7 +42,7 @@ export class ModCtr extends BaseCtr {
 
             //数据处理
             const modList: Mod[] = confAR.data;
-            const modIdList:string[] = [];
+            const modIdList: string[] = [];
 
             //附加系统默认模块
             //模式模组，未配置时自动附加
@@ -53,7 +53,7 @@ export class ModCtr extends BaseCtr {
             let modIndex = 1;
             let modId;
             for (let mod of modList) {
-                modId = modeId+ '-' + modIndex;
+                modId = modeId + '-' + modIndex;
 
                 mod.id = modId;
                 mod.conf = JSON.parse(JSON.stringify(this.buildModConf(mod)));
@@ -84,22 +84,21 @@ export class ModCtr extends BaseCtr {
         return super.db.put(mod.id ?? '', mod);
     }
 
-    static add(url: string, mod: Mod): Promise<ActResult> {
+    static add(modeId: string, mod: Mod): Promise<ActResult> {
         return new Promise(async (resolve) => {
             //模式名称
-            const modeName: string = super.buildModeName(url);
-            const modeKey = super.buildModeKey(modeName);
+            const modeKey = super.buildModeKey(modeId);
 
             //模组列表
             const modListAR: ActResult = await super.db.get(modeKey);
-            if(!modListAR.success){
+            if (!modListAR.success) {
                 resolve(modListAR)
                 return;
             }
 
-            const modList:string[] = modListAR.data;
+            const modList: string[] = modListAR.data;
 
-            const modId = `${modeName}-${modList.length +1}`;
+            const modId = `${modeId}-${modList.length + 1}`;
             modList.push(modId);
 
             mod.id = modId;
@@ -109,6 +108,14 @@ export class ModCtr extends BaseCtr {
             await super.db.put(modId, JSON.parse(JSON.stringify(mod)));
             resolve(ActResult.ok());
         });
+    }
+
+    static getGroupModIdList(groupKey: string): Promise<ActResult> {
+        return super.db.get(groupKey);
+    }
+
+    static groupAddModList(groupKey: string, modList: string[]): Promise<ActResult> {
+        return super.db.put(groupKey, modList);
     }
 
     static update(mod: Mod): Promise<ActResult> {

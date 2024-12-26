@@ -49,7 +49,7 @@ body {
 .ya-mod {
     width: 77px;
     height: 77px;
-    position: fixed;
+    position: absolute;
     border-radius: 7px;
     z-index: 0;
 }

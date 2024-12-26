@@ -194,13 +194,13 @@ async function doSaveMod() {
   display: flex;
   justify-content: center;
   align-items: center;
-  /*display: none;*/
+  z-index: 100;
 }
 
 .ya-fast-menu-pop-win {
   width: 77%;
   height: 77%;
-  background-color: rgb(255, 255, 255, 0.1);
+  background-color: rgb(0, 0, 0, 0.9);
   border-radius: 14px;
   display: flex;
   align-items: center;
