@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, onMounted, ref} from 'vue';
+import {onMounted, ref} from 'vue';
 import {ModeModConf} from "@/dom/def/mod/ModeModConf";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";

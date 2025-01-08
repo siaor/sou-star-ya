@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import {defineExpose, ref} from "vue";
+import {ref} from "vue";
 import {ActCode} from "@/dom/def/base/ActCode";
 import {Mod} from "@/dom/def/Mod";
 import {AppModConf} from "@/dom/def/mod/AppModConf";

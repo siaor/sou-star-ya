@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import {defineExpose, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {SysCtr} from "@/ctr/SysCtr";
 import {ModCtr} from "@/ctr/ModCtr";
 import {Mod} from "@/dom/def/Mod";
@@ -73,6 +73,7 @@ import {ActResult} from "@/dom/def/base/ActResult";
 import {ModeCtr} from "@/ctr/ModeCtr";
 import CreateMod from "@/view/sys/CreateMod.vue";
 import {SysEvent} from "@/dom/def/base/SysEvent";
+import {Mode} from "@/dom/def/Mode";
 
 defineExpose({
   closePop,
@@ -129,6 +130,7 @@ function doShowMenu(event: MouseEvent | TouchEvent) {
 function closePop() {
   isShowRef.value = false;
 }
+
 function closeAllPop() {
   isShowRef.value = false;
   emit('sysEv', new SysEvent(Sys.SYS_EVENT_CLOSE_MOD_MENU, {}));
@@ -155,10 +157,12 @@ function doFullScreen() {
 //整理图标
 async function doTidy() {
   //从缓存获取当前模组列表
-  const modeUrl = localStorage.getItem(Sys.SYS_MODE);
-  if (!modeUrl) return;
+  const modeId = localStorage.getItem(Sys.SYS_MODE);
+  if (!modeId) return;
 
-  const listAR = await ModCtr.list(modeUrl);
+  const mode = new Mode();
+  mode.id = modeId;
+  const listAR = await ModCtr.list(mode);
   if (!listAR.success) return;
 
   const modIdList: string[] = listAR.data;
@@ -204,11 +208,10 @@ async function doTidy() {
 
 //重置
 function doReset() {
-  const modeUrl = localStorage.getItem(Sys.SYS_MODE);
-  if (!modeUrl) return;
+  const modeId = localStorage.getItem(Sys.SYS_MODE);
+  if (!modeId) return;
 
-  const modeName = ModeCtr.buildModeName(modeUrl);
-  const modeKey = ModeCtr.buildModeKey(modeName);
+  const modeKey = ModeCtr.buildModeKey(modeId);
   localStorage.removeItem(modeKey);
 
   //重新渲染
@@ -235,7 +238,6 @@ onMounted(() => {
   position: fixed;
   width: 100%;
   height: 100%;
-  /*background-color: rgb(0, 0, 0, 0.3);*/
   z-index: -1;
 }
 

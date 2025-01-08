@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import {DefineComponent, defineProps, onMounted, ref, shallowRef} from 'vue';
+import {DefineComponent, onMounted, ref, shallowRef} from 'vue';
 import {GroupModConf} from "@/dom/def/mod/GroupModConf";
 import {Mod} from "@/dom/def/Mod";
 import {AllMod} from "@/dom/def/ModSky";

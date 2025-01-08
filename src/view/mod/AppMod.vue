@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, onMounted} from 'vue';
+import {onMounted} from 'vue';
 import {AppModConf} from "@/dom/def/mod/AppModConf";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";

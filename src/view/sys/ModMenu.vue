@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import {defineExpose, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {SysCtr} from "@/ctr/SysCtr";
 import {ModCtr} from "@/ctr/ModCtr";
 import EditMod from "@/view/sys/EditMod.vue";

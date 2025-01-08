@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, onBeforeMount, onMounted, ref} from 'vue';
+import {onBeforeMount, onMounted, ref} from 'vue';
 import {SearchModConf} from "@/dom/def/mod/SearchModConf";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";
