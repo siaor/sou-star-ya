@@ -65,7 +65,7 @@
 
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {SysCtr} from "@/ctr/SysCtr";
+import {isMobileDevice, SysCtr} from "@/ctr/SysCtr";
 import {ModCtr} from "@/ctr/ModCtr";
 import {Mod} from "@/dom/def/Mod";
 import {Sys} from "@/dom/def/base/Sys";
@@ -171,8 +171,13 @@ async function doTidy() {
   let x, y;
   let modAR: ActResult;
   let mod: Mod;
-  const maxCount = Math.floor(window.innerWidth / 100);
-  let appModIndex = 1, GroupModIndex = 1;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const maxCount = Math.floor(w / 100);
+  const groupMaxCount = isMobileDevice ? maxCount : Math.floor(w * 0.5 / 100);
+  let groupDefX = 0.34665 * w - 116.5;
+  const groupDefY = 0.000442 * h * h + 42;
+  let appModIndex = 1, groupModIndex = 1;
   for (let modId of modIdList) {
     //从缓存获取模组信息
     modAR = await ModCtr.get(modId);
@@ -188,9 +193,12 @@ async function doTidy() {
         appModIndex++;
         break;
       case "GroupMod":
-        x = ((GroupModIndex % maxCount - 1) * 100) + 28;
-        y = (Math.floor(GroupModIndex / maxCount) * 100) + 28;
-        GroupModIndex++;
+        x = groupDefX + ((groupModIndex % groupMaxCount - 1) * 100) + 28;
+        y = groupDefY + (Math.floor(groupModIndex / groupMaxCount) * 100) + 28;
+
+        if (groupModIndex === groupMaxCount - 1) groupDefX += 50;
+
+        groupModIndex++;
         break;
       default:
         x = 0;
