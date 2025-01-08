@@ -216,11 +216,22 @@ async function doTidy() {
 
 //重置
 function doReset() {
+  //获取当前模式
   const modeId = localStorage.getItem(Sys.SYS_MODE);
   if (!modeId) return;
 
+  //删除模式缓存
   const modeKey = ModeCtr.buildModeKey(modeId);
   localStorage.removeItem(modeKey);
+
+  //删除模式中的分组模组缓存
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    const key = localStorage.key(i);
+    if (!key) continue;
+    if (key.startsWith(`${modeId}-`) && key.endsWith('-group')) {
+      localStorage.removeItem(key);
+    }
+  }
 
   //重新渲染
   doRefresh();
