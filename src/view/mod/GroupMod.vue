@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import {DefineComponent, onMounted, ref, shallowRef} from 'vue';
+import {DefineComponent, onBeforeMount, onMounted, ref, shallowRef} from 'vue';
 import {GroupModConf} from "@/dom/def/mod/GroupModConf";
 import {Mod} from "@/dom/def/Mod";
 import {AllMod} from "@/dom/def/ModSky";
@@ -200,6 +200,21 @@ function sysEv(e: SysEvent) {
 }
 
 /*>>>>>>> 【组件通用处理】 <<<<<<<*/
+onBeforeMount(() => {
+  //默认位置处理
+  if (props.conf.x === 0 && props.conf.y === 0) {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const maxCount = Math.floor(w / 100);
+    const modIndex: number = parseInt(localStorage.getItem('modIndex') ?? '1', 10);
+
+    props.conf.x = ((modIndex % maxCount - 1) * 100) + 28;
+    props.conf.y = (Math.floor(modIndex / maxCount) * 100) + 28;
+
+    localStorage.setItem('modIndex', String(modIndex + 1));
+  }
+});
+
 //页面加载完成后
 onMounted(() => {
   init();

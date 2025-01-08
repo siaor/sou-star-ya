@@ -40,6 +40,7 @@ const modMenuRef = ref<InstanceType<typeof ModMenu>>();
  * @date 2024-12-12 03:41:49
  * */
 async function loadMode(mode: Mode) {
+  localStorage.setItem('modIndex','1');
   const listAR = await ModCtr.list(mode);
   if (!listAR.success) {
     alert(ActCode.MOD_CONF_NOT_FOUND.msg);

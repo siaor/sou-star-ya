@@ -6,8 +6,8 @@
   {
     "mod": "AppMod",
     "conf": {
-      "x": 28,
-      "y": 28,
+      "x": 0,
+      "y": 0,
       "name": "我的世界（国际版）",
       "url": "https://www.minecraft.net/zh-hans",
       "logo": "https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Homepage_Gameplay-Trailer_MC-OV-logo_300x300.png"
@@ -16,8 +16,8 @@
   {
     "mod": "AppMod",
     "conf": {
-      "x": 128,
-      "y": 28,
+      "x": 0,
+      "y": 0,
       "name": "原神",
       "url": "https://ys.mihoyo.com/cloud",
       "logo": "https://webstatic.mihoyo.com/common/clgm-web-app/ys/img/logo_home_header.82e54fa5.png"

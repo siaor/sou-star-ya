@@ -6,8 +6,8 @@
   {
     "mod": "AppMod",
     "conf": {
-      "x": 28,
-      "y": 28,
+      "x": 0,
+      "y": 0,
       "name": "青书",
       "url": "https://qingbook.siaor.com",
       "logo": "https://siaor.neocities.org/qingbook/favicon.svg"
@@ -16,8 +16,8 @@
   {
     "mod": "AppMod",
     "conf": {
-      "x": 128,
-      "y": 28,
+      "x": 0,
+      "y": 0,
       "name": "NodeJS",
       "url": "https://nodejs.org",
       "logo": "https://nodejs.org/favicon.ico"
@@ -26,8 +26,8 @@
   {
     "mod": "AppMod",
     "conf": {
-      "x": 228,
-      "y": 28,
+      "x": 0,
+      "y": 0,
       "name": "VSCode",
       "url": "https://code.visualstudio.com",
       "logo": "https://code.visualstudio.com/favicon.ico"
@@ -36,8 +36,8 @@
   {
     "mod": "AppMod",
     "conf": {
-      "x": 28,
-      "y": 128,
+      "x": 0,
+      "y": 0,
       "name": "Neocities",
       "url": "https://neocities.org",
       "logo": "https://neocities.org/favicon.ico"
@@ -46,8 +46,8 @@
   {
     "mod": "AppMod",
     "conf": {
-      "x": 128,
-      "y": 128,
+      "x": 0,
+      "y": 0,
       "name": "Git",
       "url": "https://git-scm.com",
       "logo": "https://git-scm.com/favicon.ico"
@@ -56,11 +56,82 @@
   {
     "mod": "AppMod",
     "conf": {
-      "x": 228,
-      "y": 128,
+      "x": 0,
+      "y": 0,
       "name": "OpenJDK",
       "url": "https://openjdk.org",
       "logo": "https://openjdk.org/images/nanoduke.ico"
+    }
+  },
+  {
+    "mod": "GroupMod",
+    "conf": {
+      "x": 0,
+      "y": 0,
+      "name": "AI工具",
+      "logo": "./img/ai_logo.svg",
+      "list": [
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "通义千问",
+            "url": "https://tongyi.aliyun.com",
+            "logo": "https://img.alicdn.com/imgextra/i1/O1CN01asLYeX1WhbsyEZn5u_!!6000000002820-55-tps-56-56.svg"
+          }
+        },
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "可灵AI",
+            "url": "https://kling.kuaishou.com",
+            "logo": "https://ecmb.bdimg.com/tam-ogel/294879962_-1348121717_88_88.png"
+          }
+        },
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "智谱清言",
+            "url": "https://chatglm.cn",
+            "logo": "https://chatglm.cn/favicon.ico"
+          }
+        },
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "文心一言",
+            "url": "https://yiyan.baidu.com",
+            "logo": "https://ecmb.bdimg.com/tam-ogel/-338790426_-1324895150_88_88.png"
+          }
+        },
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "即梦AI",
+            "url": "https://jimeng.jianying.com",
+            "logo": "https://ecmb.bdimg.com/tam-ogel/65783833_1438455051_100_100.png"
+          }
+        },
+        {
+          "mod": "AppMod",
+          "conf": {
+            "x": 0,
+            "y": 0,
+            "name": "海螺AI",
+            "url": "https://hailuoai.com/",
+            "logo": "https://hailuoai.com/favicon.ico"
+          }
+        }
+      ]
     }
   }
 ]

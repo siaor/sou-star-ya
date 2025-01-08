@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted} from 'vue';
+import {onBeforeMount, onMounted} from 'vue';
 import {AppModConf} from "@/dom/def/mod/AppModConf";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Sys} from "@/dom/def/base/Sys";
@@ -58,6 +58,21 @@ function openModMenu(event: MouseEvent | TouchEvent) {
 }
 
 /*>>>>>>> 【组件通用处理】 <<<<<<<*/
+onBeforeMount(() => {
+  //默认位置处理
+  if (props.conf.x === 0 && props.conf.y === 0) {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const maxCount = Math.floor(w / 100);
+    const modIndex: number = parseInt(localStorage.getItem('modIndex') ?? '1', 10);
+
+    props.conf.x = ((modIndex % maxCount - 1) * 100) + 28;
+    props.conf.y = (Math.floor(modIndex / maxCount) * 100) + 28;
+
+    localStorage.setItem('modIndex', String(modIndex + 1));
+  }
+});
+
 //页面加载完成后
 onMounted(() => {
   init();
