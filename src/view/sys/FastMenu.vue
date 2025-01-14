@@ -51,6 +51,7 @@
                 <div class="ya-fast-sub-menu-list">
                   <div class="ya-fast-sub-menu-item" @click="doCreateApp('AppMod')">应用</div>
                   <div class="ya-fast-sub-menu-item" @click="doCreateApp('GroupMod')">应用分组</div>
+                  <div class="ya-fast-sub-menu-item" @click="doCreateNote()">便签</div>
                 </div>
               </div>
             </div>
@@ -74,6 +75,7 @@ import {ModeCtr} from "@/ctr/ModeCtr";
 import CreateMod from "@/view/sys/CreateMod.vue";
 import {SysEvent} from "@/dom/def/base/SysEvent";
 import {Mode} from "@/dom/def/Mode";
+import {NoteModConf} from "@/dom/def/mod/NoteModConf";
 
 defineExpose({
   closePop,
@@ -245,6 +247,26 @@ function doCreateApp(mod: string) {
   createModRef.value?.openPop(mod, menuXRef.value, menuYRef.value);
 }
 
+async function doCreateNote(){
+  //从缓存获取当前模组列表
+  const modeId = localStorage.getItem(Sys.SYS_MODE);
+  if (!modeId) return;
+
+  const noteMod = new Mod();
+  noteMod.mod = "NoteMod";
+  const modConf = new NoteModConf();
+  modConf.x = menuXRef.value;
+  modConf.y = menuYRef.value;
+  noteMod.conf = modConf;
+
+
+  const addAR = await ModCtr.add(modeId, noteMod);
+  if (!addAR.success) {
+    alert(addAR.msg);
+    return;
+  }
+  window.location.reload();
+}
 
 //页面加载完成后
 onMounted(() => {

@@ -100,7 +100,6 @@ const logoRef = ref('');
 const urlRef = ref('');
 const nameRef = ref('');
 
-
 function closePop() {
   isShowPopRef.value = false;
 }
@@ -113,7 +112,6 @@ async function openPop(modId: string) {
     return;
   }
   modRef.value = modAR.data;
-  console.log(modAR.data)
   const mod = modRef.value.mod;
 
   switch (mod) {
@@ -140,7 +138,7 @@ async function openPop(modId: string) {
       isDragRef.value = String(groupModConf.isDrag);
       break;
     default:
-      alert(ActCode.ERROR.msg);
+      alert('当前模组不支持该功能');
       return;
   }
   isShowPopRef.value = true;

@@ -98,7 +98,7 @@ function sysEv(e: SysEvent) {
       break
     case Sys.SYS_EVENT_OPEN_MOD_MENU:
       fastMenuRef.value?.closePop();
-      modMenuRef.value?.openPop(e.data.id, e.data.x, e.data.y);
+      modMenuRef.value?.openPop(e.data.id, e.data.x, e.data.y,e.data.menu);
       break;
     case Sys.SYS_EVENT_CLOSE_MOD_MENU:
       modMenuRef.value?.closePop();

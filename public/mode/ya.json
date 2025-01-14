@@ -105,5 +105,33 @@
       "url": "https://siaor.taobao.com",
       "logo": "https://www.taobao.com/favicon.ico"
     }
+  },
+  {
+    "mod": "NoteMod",
+    "conf": {
+      "x": 0,
+      "y": 0,
+      "isDrag": true,
+      "title": "一切的开始",
+      "content": "<iframe allowfullscreen=\"true\" src=\"https://open.douyin.com/player/video?vid=7427842588993948937&autoplay=0\" width=\"100%\" height=\"670\" scrolling=\"no\" frameborder=\"0\"/>",
+      "isShow": false,
+      "width": 345,
+      "height": 760,
+      "bg": "rgb(0,0,0,0.3)"
+    }
+  },
+  {
+    "mod": "NoteMod",
+    "conf": {
+      "x": 0,
+      "y": 0,
+      "isDrag": true,
+      "title": "如何部署",
+      "content": "<iframe allowfullscreen=\"true\" src=\"https://open.douyin.com/player/video?vid=7440414043036257574&autoplay=0\" width=\"100%\" height=\"670\" scrolling=\"no\" frameborder=\"0\"/>",
+      "isShow": true,
+      "width": 345,
+      "height": 760,
+      "bg": "rgb(0,0,0,0.3)"
+    }
   }
 ]

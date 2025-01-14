@@ -13,7 +13,7 @@
 
     <div class="ya-mod-menu-list">
 
-      <div class="ya-mod-menu-item" @click="doOpen($event)">
+      <div class="ya-mod-menu-item" @click="doOpen($event)" v-show="isShowMenu1Ref">
         <div class="ya-mod-menu-item-left">
           <img src="/img/icon/refresh.svg" alt="ya"/>
         </div>
@@ -21,7 +21,7 @@
         <div class="ya-mod-menu-item-right"></div>
       </div>
 
-      <div class="ya-mod-menu-item" @click="doEditMod">
+      <div class="ya-mod-menu-item" @click="doEditMod" v-show="isShowMenu2Ref">
         <div class="ya-mod-menu-item-left">
           <img src="/img/icon/tidy.svg" alt="ya"/>
         </div>
@@ -29,7 +29,7 @@
         <div class="ya-mod-menu-item-right"></div>
       </div>
 
-      <div class="ya-mod-menu-item" @click="doDelete">
+      <div class="ya-mod-menu-item" @click="doDelete" v-show="isShowMenu3Ref">
         <div class="ya-mod-menu-item-left">
           <img src="/img/icon/reset.svg" alt="ya"/>
         </div>
@@ -59,6 +59,9 @@ defineExpose({
 const emit = defineEmits(['sysEv']);
 
 const isShowRef = ref(false);
+const isShowMenu1Ref = ref(true);
+const isShowMenu2Ref = ref(true);
+const isShowMenu3Ref = ref(true);
 const menuXRef = ref(0);
 const menuYRef = ref(0);
 
@@ -85,11 +88,16 @@ function doFullScreen() {
 }
 
 //打开菜单弹窗
-function openPop(modId: string, x: number, y: number) {
+function openPop(modId: string, x: number, y: number,menu?:boolean[]) {
   modIdRef.value = modId;
   menuXRef.value = x;
   menuYRef.value = y;
   isShowRef.value = true;
+  if(menu){
+    isShowMenu1Ref.value = menu[0];
+    isShowMenu2Ref.value = menu[1];
+    isShowMenu3Ref.value = menu[2];
+  }
 }
 
 //关闭菜单弹窗
@@ -255,52 +263,6 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.ya-fast-sub-menu {
-  position: relative;
-}
-
-.ya-fast-sub-menu-content {
-  position: fixed;
-  width: 140px;
-  height: 200px;
-  margin: -25px 0 0 16px;
-  z-index: 998;
-  display: none;
-}
-
-.ya-fast-sub-menu-list {
-  width: 133px;
-  height: 100%;
-  border-radius: 0 14px 14px 7px;
-  margin-left: 7px;
-  background-color: rgb(0, 0, 0, 0.4);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.ya-mod-menu-item-create:hover .ya-fast-sub-menu-create {
-  display: block;
-}
-
-.ya-fast-sub-menu-item {
-  width: 89%;
-  height: 35px;
-  white-space: nowrap;
-  background-color: rgb(255, 255, 255, 0.1);
-  border-radius: 2px 7px 2px 7px;
-  margin-top: 7px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-}
-
-.ya-fast-sub-menu-item:hover {
-  display: flex;
-  background-color: rgb(255, 255, 255, 0.3);
 }
 
 </style>
